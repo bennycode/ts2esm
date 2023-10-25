@@ -35,7 +35,7 @@
   "keywords": [],
   "license": "MIT",
   "main": "dist/src/index.js",
-  "name": "@bennycode/ts2esm",
+  "name": "ts2esm",
   "peerDependencies": {
     "typescript": "5.2.x"
   },
