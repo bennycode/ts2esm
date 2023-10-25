@@ -1,8 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {Project, type ProjectOptions} from 'ts-morph';
-import typescript from 'typescript';
-const {SyntaxKind} = typescript;
+import {SyntaxKind} from 'typescript';
 
 export function hasRelativeImport(importPath: string, quoteSymbol: string) {
   const fileName = importPath.replaceAll(quoteSymbol, '');
