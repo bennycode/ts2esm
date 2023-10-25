@@ -48,3 +48,5 @@ This program was born from an [inspiring conversation](https://twitter.com/benny
 ## References
 
 - [TypeScript's Module Resolution](https://www.typescriptlang.org/docs/handbook/modules/theory.html#module-resolution-is-host-defined)
+- [TypeScript AST Viewer](https://ts-ast-viewer.com/)
+- [Are the types wrong?](https://github.com/arethetypeswrong/arethetypeswrong.github.io)
