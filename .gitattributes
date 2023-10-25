@@ -1,0 +1,13 @@
+# https://help.github.com/articles/dealing-with-line-endings/
+* text eol=lf
+
+# Don't modify line endings of binary files
+*.eot binary
+*.jar binary
+*.jpg binary
+*.otf binary
+*.png binary
+*.svg binary
+*.ttf binary
+*.woff binary
+*.woff2 binary

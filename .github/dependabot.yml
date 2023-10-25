@@ -1,0 +1,27 @@
+version: 2
+updates:
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      day: 'tuesday'
+      interval: 'monthly'
+      time: '02:00'
+      timezone: 'Europe/Berlin'
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      day: 'tuesday'
+      interval: 'monthly'
+      time: '02:00'
+      timezone: 'Europe/Berlin'
+    pull-request-branch-name:
+      separator: '-'
+    open-pull-requests-limit: 99
+    target-branch: 'main'
+    commit-message:
+      prefix: 'chore'
+      include: 'scope'
+    ignore:
+      - dependency-name: '@types/node'
+        versions:
+          - '>= 19'

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "outDir": "dist",
+    "skipLibCheck": true
+  },
+  "extends": "@tstv/tsconfig-common/tsconfig.json"
+}
