@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
-import {sayHello} from './sayHello.js';
+import {convert} from './convert.js';
 
-console.log(sayHello());
+convert({
+  tsConfigFilePath: 'tsconfig.json',
+});
