@@ -7,7 +7,8 @@
   },
   "dependencies": {
     "@inquirer/prompts": "^3.2.0",
-    "ts-morph": "^20.0.0"
+    "ts-morph": "^20.0.0",
+    "typescript": "^5.2.2"
   },
   "description": "Add .js extensions to relative imports in your TypeScript project",
   "devDependencies": {
@@ -22,7 +23,6 @@
     "prettier": "^3.0.3",
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.1",
-    "typescript": "^5.2.2",
     "vitest": "^0.34.6"
   },
   "engines": {
