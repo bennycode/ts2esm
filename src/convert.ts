@@ -5,6 +5,10 @@ import typescript from 'typescript';
 const {SyntaxKind} = typescript;
 
 export function hasRelativeImport(importPath: string, quoteSymbol: string) {
+  const fileName = importPath.replaceAll(quoteSymbol, '');
+  if (fileName === '.' || fileName === '..') {
+    return true;
+  }
   const hasRelativeImport = importPath.startsWith(`${quoteSymbol}./`) || importPath.startsWith(`${quoteSymbol}../`);
   const extension = path.extname(importPath);
   const hasNoExtension = extension.length === 0;

@@ -11,11 +11,20 @@ describe('toESM', () => {
 
   it('creates links to index files', () => {
     expect(toESM(`'../account'`, QuoteKind.Single, true)).toBe(`'../account/index.js'`);
+    expect(toESM(`'.'`, QuoteKind.Single, true)).toBe(`'./index.js'`);
+    expect(toESM(`"."`, QuoteKind.Double, true)).toBe(`"./index.js"`);
+    expect(toESM(`'..'`, QuoteKind.Single, true)).toBe(`'../index.js'`);
+    expect(toESM(`".."`, QuoteKind.Double, true)).toBe(`"../index.js"`);
   });
 });
 
 describe('hasRelativeImport', () => {
   it('detects relative imports', () => {
+    // "." && ".."
+    expect(hasRelativeImport(`'.'`, QuoteKind.Single)).toBe(true);
+    expect(hasRelativeImport(`'.'`, QuoteKind.Single)).toBe(true);
+    expect(hasRelativeImport(`"."`, QuoteKind.Double)).toBe(true);
+    expect(hasRelativeImport(`".."`, QuoteKind.Double)).toBe(true);
     // "."
     expect(hasRelativeImport(`'./UserAPI'`, QuoteKind.Single)).toBe(true);
     expect(hasRelativeImport(`"./UserAPI"`, QuoteKind.Double)).toBe(true);
