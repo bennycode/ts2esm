@@ -1,5 +1,5 @@
 import path from 'node:path';
-import {Project, ProjectOptions} from 'ts-morph';
+import {Project, type ProjectOptions} from 'ts-morph';
 import {SyntaxKind} from 'typescript';
 
 export function convert(options: ProjectOptions) {
