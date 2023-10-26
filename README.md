@@ -1,21 +1,41 @@
 # ts2esm
 
-Fixes your relative TypeScript imports automatically, converting them into ESM-compatible imports with explicit `.js` file extensions. 🪄
+![Logo](./logo.png)
 
-![Automate all the things](./automate.webp)
+Fixes your relative TypeScript imports & exports automatically, converting them into ESM-compatible imports & exports with explicit `.js` file extensions. 🪄
 
-## Example
+## Examples
+
+### Import
 
 Turns:
 
 ```ts
+import {AccountAPI} from '../account';
 import {RESTClient} from './client/RESTClient';
 ```
 
 Into:
 
 ```ts
+import {AccountAPI} from '../account/index.js';
 import {RESTClient} from './client/RESTClient.js';
+```
+
+### Export
+
+Turns:
+
+```ts
+export * from './account';
+export * from './UserAPI';
+```
+
+Into:
+
+```ts
+export * from './account/index.js';
+export * from './UserAPI.js';
 ```
 
 ## Installation
@@ -37,9 +57,11 @@ ts2esm
 
 ## How it works
 
-The `ts2esm` program adjusts your relative imports, adding extensions like `index.js` or `.js` to make them ESM-compatible. Say goodbye to import errors such as [**TS2835**](https://typescript.tv/errors/#ts2835)!
+The `ts2esm` program adjusts your relative imports, adding extensions like `index.js` or `.js` to make them ESM-compatible. Say goodbye to import errors such as **TS2834** or [**TS2835**](https://typescript.tv/errors/#ts2835)!
 
-> error TS2835: Relative import paths need explicit file extensions in EcmaScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './client/RESTClient.js'?
+> error TS2834: Relative import paths need explicit file extensions in EcmaScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path.
+
+> error TS2835: Relative import paths need explicit file extensions in EcmaScript imports when '--moduleResolution' is 'node16' or 'nodenext'.
 
 ## Credits
 
