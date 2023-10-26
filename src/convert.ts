@@ -68,9 +68,7 @@ export function convert(options: ProjectOptions) {
     sourceFile.getExportDeclarations().forEach(exportDeclaration => {
       exportDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
         const exportChanges = rewrite(filePath, stringLiteral);
-        if (!madeChanges) {
-          madeChanges = exportChanges;
-        }
+        madeChanges = madeChanges || exportChanges;
       });
     });
 
