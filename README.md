@@ -1,12 +1,22 @@
 # ts2esm
 
-![Logo](./logo.png)
+Converts your relative TypeScript import & export declarations into ESM-compatible declarations. 🪄
 
-Fixes your relative TypeScript imports & exports automatically, converting them into ESM-compatible imports & exports with explicit `.js` file extensions. 🪄
+## Guide
+
+Convert your CommonJS TypeScript project into an ECMAScript module with these simple steps:
+
+1. Add `"type": "module"` in your `package.json`
+2. Set [module](https://www.typescriptlang.org/tsconfig#module) to `"nodenext"` in your `tsconfig.json`
+3. Set [moduleResolution](https://www.typescriptlang.org/tsconfig#moduleResolution) to `"nodenext"` in your `tsconfig.json`
+4. Run `ts2esm` in the directory of your TypeScript project
+
+> [!IMPORTANT]  
+> Use TypeScript 5.2 or later as there have been [breaking changes to the Node.js settings](https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/#breaking-changes-and-correctness-fixes), which you don't want to miss.
 
 ## Examples
 
-### Import
+### Imports
 
 Turns:
 
@@ -22,7 +32,7 @@ import {AccountAPI} from '../account/index.js';
 import {RESTClient} from './client/RESTClient.js';
 ```
 
-### Export
+### Exports
 
 Turns:
 
@@ -36,6 +46,20 @@ Into:
 ```ts
 export * from './account/index.js';
 export * from './UserAPI.js';
+```
+
+### JSON Import Assertions
+
+Turns:
+
+```ts
+import listAccounts from '../test/fixtures/listAccounts.json';
+```
+
+Into:
+
+```ts
+import listAccounts from '../test/fixtures/listAccounts.json' assert {type: 'json'};
 ```
 
 ## Installation
@@ -52,12 +76,22 @@ Afterwards, just launch the program inside the directory of your TS project (it 
 ts2esm
 ```
 
+You can also enable verbose logging with:
+
+```bash
+ts2esm --debug
+```
+
 > [!WARNING]  
 > Make sure you have a backup (in Git or similar) of your code as this program will modify your source code.
 
 ## How it works
 
 The `ts2esm` program adjusts your relative imports, adding extensions like `index.js` or `.js` to make them ESM-compatible. Say goodbye to import errors such as **TS2834** or [**TS2835**](https://typescript.tv/errors/#ts2835)!
+
+Errors that get automatically fixed (🛠️):
+
+> TypeError [ERR_IMPORT_ASSERTION_TYPE_MISSING]: Module needs an import assertion of type "json"
 
 > error TS2834: Relative import paths need explicit file extensions in EcmaScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path.
 

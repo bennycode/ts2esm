@@ -3,8 +3,23 @@
 import {convert} from './convert.js';
 import {input} from '@inquirer/prompts';
 
-const tsConfigFilePath = await input({default: 'tsconfig.json', message: 'Enter the file path to your TS config'});
+const args = process.argv.slice(2);
+const enableDebug = args.includes('--debug');
 
-convert({
-  tsConfigFilePath,
-});
+let tsConfigFilePath = '';
+
+try {
+  tsConfigFilePath = await input({default: 'tsconfig.json', message: 'Enter the file path to your TS config'});
+} catch {
+  // Capturing "Ctrl + C" in "Inquirer" prompts
+  console.log('Goodbye!');
+}
+
+if (tsConfigFilePath) {
+  convert(
+    {
+      tsConfigFilePath,
+    },
+    enableDebug
+  );
+}
