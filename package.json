@@ -74,5 +74,5 @@
     "test:unit:coverage": "npm run test:unit -- --coverage"
   },
   "type": "module",
-  "version": "0.0.7"
+  "version": "1.0.0"
 }
