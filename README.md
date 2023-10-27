@@ -83,7 +83,7 @@ ts2esm --debug
 ```
 
 > [!WARNING]  
-> Make sure you have a backup (in Git or similar) of your code as this program will modify your source code.
+> Make sure you have a backup (in Git or similar) of your code as "ts2esm" will modify your source code.
 
 ## How it works
 
