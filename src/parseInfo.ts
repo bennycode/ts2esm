@@ -9,7 +9,7 @@ export type ModuleInfo = {
   directory: string;
   /** File extension with leading dot, i.e. ".ts". If there is no extension, it will be an empty string. */
   extension: string;
-  /** Quote syntax of import statement, i.e. `"` */
+  /** Quote symbol being used in the import statement, i.e. `"` */
   quoteSymbol: string;
   /** Declaration without quotes, i.e. "../UserAPI" */
   normalized: string;
