@@ -1,6 +1,6 @@
 # ts2esm
 
-Converts your relative TypeScript import & export declarations into ESM-compatible declarations. 🪄
+Converts your TypeScript import & export declarations into ESM-compatible declarations. 🪄
 
 ## Guide
 

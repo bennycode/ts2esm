@@ -10,7 +10,7 @@
     "ts-morph": "^20.0.0",
     "typescript": "^5.2.2"
   },
-  "description": "Add .js extensions to relative imports and exports in your TypeScript project",
+  "description": "Transforms TypeScript imports and exports into ESM-compatible declarations.",
   "devDependencies": {
     "@evilmartians/lefthook": "^1.5.2",
     "@tstv/eslint-config": "^3.1.3",
