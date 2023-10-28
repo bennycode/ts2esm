@@ -87,7 +87,7 @@ ts2esm --debug
 
 ## How it works
 
-The `ts2esm` program adjusts your relative imports, adding extensions like `index.js` or `.js` to make them ESM-compatible. Say goodbye to import errors such as **TS2307**, **TS2834**, and [**TS2835**](https://typescript.tv/errors/#ts2835)!
+The `ts2esm` program adjusts your relative imports, adding extensions like `index.js` or `.js` to make them ESM-compatible. Say goodbye to import errors such as **TS2305*, **TS2307**, **TS2834**, and [**TS2835**](https://typescript.tv/errors/#ts2835)!
 
 Errors that get automatically fixed (🛠️):
 
