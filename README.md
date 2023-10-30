@@ -14,6 +14,12 @@ Convert your CommonJS TypeScript project into an ECMAScript module with these si
 > [!IMPORTANT]  
 > Use TypeScript 5.2 or later as there have been [breaking changes to the Node.js settings](https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/#breaking-changes-and-correctness-fixes), which you don't want to miss.
 
+## Video Tutorial
+
+Watch this 5-minute video and learn how to migrate from CommonJS to ESM:
+
+[<img src="https://i.ytimg.com/vi_webp/bgGQgSQSpI8/mqdefault.webp">](https://youtu.be/bgGQgSQSpI8)
+
 ## Examples
 
 ### Imports
