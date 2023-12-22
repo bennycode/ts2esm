@@ -13,7 +13,7 @@ export function convert(options: ProjectOptions, debugLogging: boolean = false) 
   project.getSourceFiles().forEach(sourceFile => {
     const filePath = sourceFile.getFilePath();
     if (debugLogging) {
-      console.log(`Checking: ${filePath}`);
+      console.log(` Checking: ${filePath}`);
     }
 
     let madeChanges: boolean = false;
@@ -35,7 +35,7 @@ export function convert(options: ProjectOptions, debugLogging: boolean = false) 
 
     if (madeChanges) {
       sourceFile.saveSync();
-      console.log(`Modified (🔧): ${filePath}`);
+      console.log(`  Modified (🔧): ${filePath}`);
     }
   });
 }
