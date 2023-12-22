@@ -82,6 +82,12 @@ Afterwards, just launch the program inside the directory of your TS project (it 
 ts2esm
 ```
 
+Or you can provide a list of tsconfig paths (no prompt):
+
+```bash
+ts2esm packages/foo/tsconfig.json packages/bar/tsconfig.json
+```
+
 You can also enable verbose logging with:
 
 ```bash
