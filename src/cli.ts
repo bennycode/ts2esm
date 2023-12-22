@@ -26,9 +26,7 @@ if (configFiles.length === 0) {
 }
 
 configFiles.forEach(tsConfigFilePath => {
-  if (enableDebug) {
-    console.log(`Processing: ${tsConfigFilePath}`);
-  }
+  console.log(`Processing: ${tsConfigFilePath}`);
   convert(
     {
       tsConfigFilePath,

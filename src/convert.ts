@@ -35,7 +35,7 @@ export function convert(options: ProjectOptions, debugLogging: boolean = false) 
 
     if (madeChanges) {
       sourceFile.saveSync();
-      console.log(`${debugLogging ? '  ' : ''}Modified (🔧): ${filePath}`);
+      console.log(`  Modified (🔧): ${filePath}`);
     }
   });
 }
