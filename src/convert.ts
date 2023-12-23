@@ -1,11 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {Project, type ProjectOptions, type StringLiteral} from 'ts-morph';
+import {Project, type ProjectOptions, StringLiteral, SyntaxKind} from 'ts-morph';
 import {toIndex, toJS, toJSON} from './util.js';
-import {parseInfo, type ModuleInfo} from './parseInfo.js';
-import typescript from 'typescript';
-
-const {SyntaxKind} = typescript;
+import {type ModuleInfo, parseInfo} from './parseInfo.js';
 
 export function convert(options: ProjectOptions, debugLogging: boolean = false) {
   const project = new Project(options);

@@ -1,3 +1,6 @@
 {
-  "extends": "@tstv/eslint-config"
+  "extends": "@tstv/eslint-config",
+  "rules": {
+    "@typescript-eslint/consistent-type-imports": "off"
+  }
 }
