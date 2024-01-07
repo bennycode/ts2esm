@@ -18,10 +18,6 @@ export function toJSON({declaration, quoteSymbol}: Pick<ModuleInfo, 'declaration
   return `${declaration} ${jsonImportAssertion}`;
 }
 
-export function toIndex({declaration, quoteSymbol}: Pick<ModuleInfo, 'declaration' | 'quoteSymbol'>) {
-  return `${declaration.replace(new RegExp(`${quoteSymbol}$`), `/index.js${quoteSymbol}`)}`;
-}
-
-export function toJS({declaration, quoteSymbol}: Pick<ModuleInfo, 'declaration' | 'quoteSymbol'>) {
-  return `${declaration.replace(new RegExp(`${quoteSymbol}$`), `.js${quoteSymbol}`)}`;
+export function toJS({declaration, quoteSymbol}: Pick<ModuleInfo, 'declaration' | 'quoteSymbol'>, extension: string) {
+  return `${declaration.replace(new RegExp(`${quoteSymbol}$`), `${extension}${quoteSymbol}`)}`;
 }

@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {Project, type ProjectOptions, StringLiteral, SyntaxKind} from 'ts-morph';
-import {toIndex, toJS, toJSON} from './util.js';
+import {toJS, toJSON} from './util.js';
 import {type ModuleInfo, parseInfo} from './parseInfo.js';
 
 export function convert(options: ProjectOptions, debugLogging: boolean = false) {
@@ -53,14 +53,23 @@ function createReplacementPath(info: ModuleInfo, hasAssertClause: boolean) {
   }
 
   if (info.isRelative) {
+    // If an import does not have a file extension, try to find a matching file by traversing through all valid
+    // TypeScript source file extensions.
     if (info.extension === '') {
       for (const replacement of [
-        {suffix: '.ts', toFn: toJS},
-        {suffix: '.tsx', toFn: toJS},
-        {suffix: '/index.ts', toFn: toIndex},
+        {suffix: '.cts', newExtension: '.cjs'},
+        {suffix: '.mts', newExtension: '.mjs'},
+        {suffix: '.ts', newExtension: '.js'},
+        {suffix: '.tsx', newExtension: '.jsx'},
+        {suffix: '/index.cts', newExtension: '/index.cjs'},
+        {suffix: '/index.mts', newExtension: '/index.mjs'},
+        {suffix: '/index.ts', newExtension: '/index.js'},
+        {suffix: '/index.tsx', newExtension: '/index.jsx'},
       ]) {
-        if (fs.existsSync(path.join(info.directory, info.normalized + replacement.suffix))) {
-          return replacement.toFn(info);
+        // If a valid file has been found, create a fully-specified path (including the file extension) for it.
+        const fileCandidate = path.join(info.directory, `${info.normalized}${replacement.suffix}`);
+        if (fs.existsSync(fileCandidate)) {
+          return toJS(info, replacement.newExtension);
         }
       }
     } else if (info.extension === '.json') {
