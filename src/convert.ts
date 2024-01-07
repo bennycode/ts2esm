@@ -54,12 +54,14 @@ function createReplacementPath(info: ModuleInfo, hasAssertClause: boolean) {
 
   if (info.isRelative) {
     if (info.extension === '') {
-      const tsPath = path.join(info.directory, info.normalized + '.ts');
-      const indexPath = path.join(info.directory, info.normalized + '/index.ts');
-      if (fs.existsSync(tsPath)) {
-        return toJS(info);
-      } else if (fs.existsSync(indexPath)) {
-        return toIndex(info);
+      for (const replacement of [
+        {suffix: '.ts', toFn: toJS},
+        {suffix: '.tsx', toFn: toJS},
+        {suffix: '/index.ts', toFn: toIndex},
+      ]) {
+        if (fs.existsSync(path.join(info.directory, info.normalized + replacement.suffix))) {
+          return replacement.toFn(info);
+        }
       }
     } else if (info.extension === '.json') {
       return toJSON(info);
