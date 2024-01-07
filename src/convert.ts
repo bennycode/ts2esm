@@ -57,14 +57,14 @@ function createReplacementPath(info: ModuleInfo, hasAssertClause: boolean) {
     // TypeScript source file extensions.
     if (info.extension === '') {
       for (const replacement of [
-        {suffix: '.cts', newExtension: '.cjs'},
-        {suffix: '.mts', newExtension: '.mjs'},
-        {suffix: '.ts', newExtension: '.js'},
-        {suffix: '.tsx', newExtension: '.jsx'},
-        {suffix: '/index.cts', newExtension: '/index.cjs'},
-        {suffix: '/index.mts', newExtension: '/index.mjs'},
-        {suffix: '/index.ts', newExtension: '/index.js'},
-        {suffix: '/index.tsx', newExtension: '/index.jsx'},
+        {newExtension: '.cjs', suffix: '.cts'},
+        {newExtension: '.mjs', suffix: '.mts'},
+        {newExtension: '.js', suffix: '.ts'},
+        {newExtension: '.jsx', suffix: '.tsx'},
+        {newExtension: '/index.cjs', suffix: '/index.cts'},
+        {newExtension: '/index.mjs', suffix: '/index.mts'},
+        {newExtension: '/index.js', suffix: '/index.ts'},
+        {newExtension: '/index.jsx', suffix: '/index.tsx'},
       ]) {
         // If a valid file has been found, create a fully-specified path (including the file extension) for it.
         const fileCandidate = path.join(info.directory, `${info.normalized}${replacement.suffix}`);

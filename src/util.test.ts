@@ -46,80 +46,113 @@ describe('toJSON', () => {
 describe('toJS', () => {
   it('adds an ESM-compatible .js extension', () => {
     expect(
-      toJS({
-        declaration: `'../user/UserAPI'`,
-        quoteSymbol: `'`,
-      }, '.js')
+      toJS(
+        {
+          declaration: `'../user/UserAPI'`,
+          quoteSymbol: `'`,
+        },
+        '.js'
+      )
     ).toBe(`'../user/UserAPI.js'`);
     expect(
-      toJS({
-        declaration: `"./WebSocketClient"`,
-        quoteSymbol: `"`,
-      }, '.js')
+      toJS(
+        {
+          declaration: `"./WebSocketClient"`,
+          quoteSymbol: `"`,
+        },
+        '.js'
+      )
     ).toBe(`"./WebSocketClient.js"`);
   });
 
   it('adds an index suffix', () => {
     expect(
-      toJS({
-        declaration: `'../account'`,
-        quoteSymbol: `'`,
-      }, '/index.js')
+      toJS(
+        {
+          declaration: `'../account'`,
+          quoteSymbol: `'`,
+        },
+        '/index.js'
+      )
     ).toBe(`'../account/index.js'`);
     expect(
-      toJS({
-        declaration: `"../account"`,
-        quoteSymbol: `"`,
-      }, '/index.js')
+      toJS(
+        {
+          declaration: `"../account"`,
+          quoteSymbol: `"`,
+        },
+        '/index.js'
+      )
     ).toBe(`"../account/index.js"`);
     expect(
-      toJS({
-        declaration: `'.'`,
-        quoteSymbol: `'`,
-      }, '/index.js')
+      toJS(
+        {
+          declaration: `'.'`,
+          quoteSymbol: `'`,
+        },
+        '/index.js'
+      )
     ).toBe(`'./index.js'`);
     expect(
-      toJS({
-        declaration: `"."`,
-        quoteSymbol: `"`,
-      }, '/index.js')
+      toJS(
+        {
+          declaration: `"."`,
+          quoteSymbol: `"`,
+        },
+        '/index.js'
+      )
     ).toBe(`"./index.js"`);
     expect(
-      toJS({
-        declaration: `'..'`,
-        quoteSymbol: `'`,
-      }, '/index.js')
+      toJS(
+        {
+          declaration: `'..'`,
+          quoteSymbol: `'`,
+        },
+        '/index.js'
+      )
     ).toBe(`'../index.js'`);
     expect(
-      toJS({
-        declaration: `".."`,
-        quoteSymbol: `"`,
-      }, '/index.js')
+      toJS(
+        {
+          declaration: `".."`,
+          quoteSymbol: `"`,
+        },
+        '/index.js'
+      )
     ).toBe(`"../index.js"`);
   });
 
   it('works with TSX files', () => {
     expect(
-      toJS({
-        declaration: `'./AppTheme'`,
-        quoteSymbol: `'`,
-      }, '.jsx')
+      toJS(
+        {
+          declaration: `'./AppTheme'`,
+          quoteSymbol: `'`,
+        },
+        '.jsx'
+      )
     ).toBe(`'./AppTheme.jsx'`);
   });
 
   it('works with module files', () => {
     expect(
-      toJS({
-        declaration: `'./add'`,
-        quoteSymbol: `'`,
-      }, '.cjs')
+      toJS(
+        {
+          declaration: `'./add'`,
+          quoteSymbol: `'`,
+        },
+        '.cjs'
+      )
     ).toBe(`'./add.cjs'`);
 
     expect(
-      toJS({
-        declaration: `'./add'`,
-        quoteSymbol: `'`,
-      }, '.mjs')
+      toJS(
+        {
+          declaration: `'./add'`,
+          quoteSymbol: `'`,
+        },
+        '.mjs'
+      )
     ).toBe(`'./add.mjs'`);
   });
 });
