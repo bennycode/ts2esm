@@ -57,17 +57,21 @@ function createReplacementPath(info: ModuleInfo, hasAssertClause: boolean) {
     // TypeScript source file extensions.
     if (info.extension === '') {
       for (const replacement of [
-        {newExtension: '.cjs', suffix: '.cts'},
-        {newExtension: '.mjs', suffix: '.mts'},
-        {newExtension: '.js', suffix: '.ts'},
-        {newExtension: '.js', suffix: '.tsx'},
-        {newExtension: '/index.cjs', suffix: '/index.cts'},
-        {newExtension: '/index.mjs', suffix: '/index.mts'},
-        {newExtension: '/index.js', suffix: '/index.ts'},
-        {newExtension: '/index.js', suffix: '/index.tsx'},
+        {newExtension: '.cjs', candidate: '.cts'},
+        {newExtension: '.js', candidate: '.js'},
+        {newExtension: '.js', candidate: '.jsx'},
+        {newExtension: '.js', candidate: '.ts'},
+        {newExtension: '.js', candidate: '.tsx'},
+        {newExtension: '.mjs', candidate: '.mts'},
+        {newExtension: '/index.cjs', candidate: '/index.cts'},
+        {newExtension: '/index.js', candidate: '/index.js'},
+        {newExtension: '/index.js', candidate: '/index.jsx'},
+        {newExtension: '/index.js', candidate: '/index.ts'},
+        {newExtension: '/index.js', candidate: '/index.tsx'},
+        {newExtension: '/index.mjs', candidate: '/index.mts'},
       ]) {
         // If a valid file has been found, create a fully-specified path (including the file extension) for it.
-        const fileCandidate = path.join(info.directory, `${info.normalized}${replacement.suffix}`);
+        const fileCandidate = path.join(info.directory, `${info.normalized}${replacement.candidate}`);
         if (fs.existsSync(fileCandidate)) {
           return toJS(info, replacement.newExtension);
         }
