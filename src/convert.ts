@@ -60,11 +60,11 @@ function createReplacementPath(info: ModuleInfo, hasAssertClause: boolean) {
         {newExtension: '.cjs', suffix: '.cts'},
         {newExtension: '.mjs', suffix: '.mts'},
         {newExtension: '.js', suffix: '.ts'},
-        {newExtension: '.jsx', suffix: '.tsx'},
+        {newExtension: '.js', suffix: '.tsx'},
         {newExtension: '/index.cjs', suffix: '/index.cts'},
         {newExtension: '/index.mjs', suffix: '/index.mts'},
         {newExtension: '/index.js', suffix: '/index.ts'},
-        {newExtension: '/index.jsx', suffix: '/index.tsx'},
+        {newExtension: '/index.js', suffix: '/index.tsx'},
       ]) {
         // If a valid file has been found, create a fully-specified path (including the file extension) for it.
         const fileCandidate = path.join(info.directory, `${info.normalized}${replacement.suffix}`);
