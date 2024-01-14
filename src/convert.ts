@@ -53,31 +53,33 @@ function createReplacementPath(info: ModuleInfo, hasAssertClause: boolean) {
   }
 
   if (info.isRelative) {
-    // If an import does not have a file extension, try to find a matching file by traversing through all valid
-    // TypeScript source file extensions.
-    if (info.extension === '') {
-      for (const replacement of [
-        {candidate: '.cts', newExtension: '.cjs'},
-        {candidate: '.js', newExtension: '.js'},
-        {candidate: '.jsx', newExtension: '.js'},
-        {candidate: '.mts', newExtension: '.mjs'},
-        {candidate: '.ts', newExtension: '.js'},
-        {candidate: '.tsx', newExtension: '.js'},
-        {candidate: '/index.cts', newExtension: '/index.cjs'},
-        {candidate: '/index.js', newExtension: '/index.js'},
-        {candidate: '/index.jsx', newExtension: '/index.js'},
-        {candidate: '/index.mts', newExtension: '/index.mjs'},
-        {candidate: '/index.ts', newExtension: '/index.js'},
-        {candidate: '/index.tsx', newExtension: '/index.js'},
-      ]) {
-        // If a valid file has been found, create a fully-specified path (including the file extension) for it.
-        const fileCandidate = path.join(info.directory, `${info.normalized}${replacement.candidate}`);
-        if (fs.existsSync(fileCandidate)) {
-          return toJS(info, replacement.newExtension);
+    if (info.extension === '.json') {
+      return toJSON(info);
+    }
+
+    // If an import does not have a file extension or isn't an extension recognized here and can't be found locally (perhaps
+    // file had . in name), try to find a matching file by traversing through all valid TypeScript source file extensions.
+    const baseFilePath = path.join(info.directory, info.normalized);
+    if (info.extension === '' || (!['.js', '.cjs', '.mjs'].includes(info.extension) && !fs.existsSync(baseFilePath))) {
+      for (const bareOrIndex of ['', '/index']) {
+        for (const replacement of [
+          // Sorted by expected most common to least common for performance.
+          {candidate: '.ts', newExtension: '.js'},
+          {candidate: '.tsx', newExtension: '.js'},
+          {candidate: '.js', newExtension: '.js'},
+          {candidate: '.jsx', newExtension: '.js'},
+          {candidate: '.cts', newExtension: '.cjs'},
+          {candidate: '.mts', newExtension: '.mjs'},
+          {candidate: '.cjs', newExtension: '.cjs'},
+          {candidate: '.mjs', newExtension: '.mjs'},
+        ]) {
+          // If a valid file has been found, create a fully-specified path (including the file extension) for it.
+          const fileCandidate = `${baseFilePath}${bareOrIndex}${replacement.candidate}`;
+          if (fs.existsSync(fileCandidate)) {
+            return toJS(info, `${bareOrIndex}${replacement.newExtension}`);
+          }
         }
       }
-    } else if (info.extension === '.json') {
-      return toJSON(info);
     }
   }
   return null;
