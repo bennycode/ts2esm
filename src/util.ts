@@ -13,11 +13,20 @@ export function getExtension(importPath: string, quoteSymbol: string) {
   return path.extname(fileName);
 }
 
-export function toJSON({declaration, quoteSymbol}: Pick<ModuleInfo, 'declaration' | 'quoteSymbol'>) {
-  const jsonImportAssertion = `assert {type: ${quoteSymbol}json${quoteSymbol}}`;
-  return `${declaration} ${jsonImportAssertion}`;
+export function toImportAssertion({
+  declaration,
+  quoteSymbol,
+  extension,
+}: Pick<ModuleInfo, 'declaration' | 'quoteSymbol' | 'extension'>) {
+  const type = extension.replace('.', '');
+  const importAssertion = `assert {type: ${quoteSymbol}${type}${quoteSymbol}}`;
+  return `${declaration} ${importAssertion}`;
 }
 
-export function toJS({declaration, quoteSymbol}: Pick<ModuleInfo, 'declaration' | 'quoteSymbol'>, extension: string) {
+export function toImport({
+  declaration,
+  quoteSymbol,
+  extension,
+}: Pick<ModuleInfo, 'declaration' | 'quoteSymbol' | 'extension'>) {
   return `${declaration.replace(new RegExp(`${quoteSymbol}$`), `${extension}${quoteSymbol}`)}`;
 }

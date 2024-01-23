@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {Project, type ProjectOptions, StringLiteral, SyntaxKind} from 'ts-morph';
-import {toJS, toJSON} from './util.js';
+import {toImport, toImportAssertion} from './util.js';
 import {type ModuleInfo, parseInfo} from './parseInfo.js';
 
 export function convert(options: ProjectOptions, debugLogging: boolean = false) {
@@ -53,8 +53,8 @@ function createReplacementPath(info: ModuleInfo, hasAssertClause: boolean) {
   }
 
   if (info.isRelative) {
-    if (info.extension === '.json') {
-      return toJSON(info);
+    if (info.extension === '.json' || info.extension === '.css') {
+      return toImportAssertion(info);
     }
 
     // If an import does not have a file extension or isn't an extension recognized here and can't be found locally (perhaps
@@ -76,7 +76,7 @@ function createReplacementPath(info: ModuleInfo, hasAssertClause: boolean) {
           // If a valid file has been found, create a fully-specified path (including the file extension) for it.
           const fileCandidate = `${baseFilePath}${bareOrIndex}${replacement.candidate}`;
           if (fs.existsSync(fileCandidate)) {
-            return toJS(info, `${bareOrIndex}${replacement.newExtension}`);
+            return toImport({...info, extension: `${bareOrIndex}${replacement.newExtension}`});
           }
         }
       }
