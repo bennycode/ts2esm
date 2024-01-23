@@ -68,6 +68,20 @@ Into:
 import listAccounts from '../test/fixtures/listAccounts.json' assert {type: 'json'};
 ```
 
+### CSS Import Assertions
+
+Turns:
+
+```ts
+import styles from './MyComponent.module.css';
+```
+
+Into:
+
+```ts
+import styles from './MyComponent.module.css' assert {type: 'css'};
+```
+
 ## Installation
 
 Simply run this command to install `ts2esm` globally on your machine:
