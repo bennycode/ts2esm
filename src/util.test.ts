@@ -31,15 +31,15 @@ describe('toImportAssertion', () => {
     expect(
       toImportAssertion({
         declaration: `'./test/fixtures.json'`,
-        quoteSymbol: `'`,
         extension: '.json',
+        quoteSymbol: `'`,
       })
     ).toBe(`'./test/fixtures.json' assert {type: 'json'}`);
     expect(
       toImportAssertion({
         declaration: `"../test/fixtures.json"`,
-        quoteSymbol: `"`,
         extension: '.json',
+        quoteSymbol: `"`,
       })
     ).toBe(`"../test/fixtures.json" assert {type: "json"}`);
   });
@@ -48,8 +48,8 @@ describe('toImportAssertion', () => {
     expect(
       toImportAssertion({
         declaration: `'./MyComponent.module.css'`,
-        quoteSymbol: `'`,
         extension: '.css',
+        quoteSymbol: `'`,
       })
     ).toBe(`'./MyComponent.module.css' assert {type: 'css'}`);
   });
@@ -60,15 +60,15 @@ describe('toImport', () => {
     expect(
       toImport({
         declaration: `'../user/UserAPI'`,
-        quoteSymbol: `'`,
         extension: '.js',
+        quoteSymbol: `'`,
       })
     ).toBe(`'../user/UserAPI.js'`);
     expect(
       toImport({
         declaration: `"./WebSocketClient"`,
-        quoteSymbol: `"`,
         extension: '.js',
+        quoteSymbol: `"`,
       })
     ).toBe(`"./WebSocketClient.js"`);
   });
@@ -77,43 +77,43 @@ describe('toImport', () => {
     expect(
       toImport({
         declaration: `'../account'`,
-        quoteSymbol: `'`,
         extension: '/index.js',
+        quoteSymbol: `'`,
       })
     ).toBe(`'../account/index.js'`);
     expect(
       toImport({
         declaration: `"../account"`,
-        quoteSymbol: `"`,
         extension: '/index.js',
+        quoteSymbol: `"`,
       })
     ).toBe(`"../account/index.js"`);
     expect(
       toImport({
         declaration: `'.'`,
-        quoteSymbol: `'`,
         extension: '/index.js',
+        quoteSymbol: `'`,
       })
     ).toBe(`'./index.js'`);
     expect(
       toImport({
         declaration: `"."`,
-        quoteSymbol: `"`,
         extension: '/index.js',
+        quoteSymbol: `"`,
       })
     ).toBe(`"./index.js"`);
     expect(
       toImport({
         declaration: `'..'`,
-        quoteSymbol: `'`,
         extension: '/index.js',
+        quoteSymbol: `'`,
       })
     ).toBe(`'../index.js'`);
     expect(
       toImport({
         declaration: `".."`,
-        quoteSymbol: `"`,
         extension: '/index.js',
+        quoteSymbol: `"`,
       })
     ).toBe(`"../index.js"`);
   });
@@ -122,8 +122,8 @@ describe('toImport', () => {
     expect(
       toImport({
         declaration: `'./AppTheme'`,
-        quoteSymbol: `'`,
         extension: '.jsx',
+        quoteSymbol: `'`,
       })
     ).toBe(`'./AppTheme.jsx'`);
   });
@@ -132,16 +132,16 @@ describe('toImport', () => {
     expect(
       toImport({
         declaration: `'./add'`,
-        quoteSymbol: `'`,
         extension: '.cjs',
+        quoteSymbol: `'`,
       })
     ).toBe(`'./add.cjs'`);
 
     expect(
       toImport({
         declaration: `'./add'`,
-        quoteSymbol: `'`,
         extension: '.mjs',
+        quoteSymbol: `'`,
       })
     ).toBe(`'./add.mjs'`);
   });
