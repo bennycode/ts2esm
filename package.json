@@ -6,7 +6,7 @@
     "url": "https://github.com/bennycode/ts2esm/issues"
   },
   "dependencies": {
-    "@inquirer/prompts": "^3.2.0",
+    "@inquirer/prompts": "^4.1.0",
     "ts-morph": "^20.0.0",
     "typescript": "^5.2.2"
   },
