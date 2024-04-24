@@ -3,7 +3,8 @@
   "extends": "@tstv/tsconfig-common/tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["vitest/globals"]
   },
   "include": ["src/**/*", "vitest.config.ts"]
 }
