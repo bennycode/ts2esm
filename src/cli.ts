@@ -18,7 +18,9 @@ const configFiles = args.filter(arg => !arg.startsWith('--'));
 
 if (configFiles.length === 0) {
   try {
-    configFiles.push(await input({default: 'tsconfig.json', message: 'Enter the "relative" file path to your TS config'}));
+    configFiles.push(
+      await input({default: 'tsconfig.json', message: 'Enter the "relative" file path to your TS config'})
+    );
   } catch {
     // Capturing "Ctrl + C" in "Inquirer" prompts
     console.log('Goodbye!');
