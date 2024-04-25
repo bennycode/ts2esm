@@ -1,4 +1,3 @@
-import {describe, expect, it} from 'vitest';
 import {QuoteKind} from 'ts-morph';
 import {getExtension, hasRelativePath, toImport, toImportAssertion} from './util.js';
 
