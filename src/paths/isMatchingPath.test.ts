@@ -3,13 +3,13 @@ import {isMatchingPath} from './isMatchingPath.js';
 describe('isMatchingPath', () => {
   it('matches paths aliases from tsconfig.json', () => {
     // truthy
-    expect(isMatchingPath('@app/*', '@app/dto/AppTokens')).toBe(true);
-    expect(isMatchingPath('*', './removeSuffix')).toBe(true);
-    expect(isMatchingPath('🐵', '🐵/removeSuffix')).toBe(true);
-    expect(isMatchingPath('~/*', '~/layouts/PageLayout.astro')).toBe(true);
+    expect(isMatchingPath('@app/*', '@app/dto/AppTokens')).toBeTruthy();
+    expect(isMatchingPath('*', './removeSuffix')).toBeTruthy();
+    expect(isMatchingPath('~/*', '~/layouts/PageLayout.astro')).toBeTruthy();
+    expect(isMatchingPath('🐵', '🐵/removeSuffix')).toBeTruthy();
+    expect(isMatchingPath('helpers/*', 'helpers/removeSuffix')).toBeTruthy();
     // falsy
-    expect(isMatchingPath('@app/*', './removeSuffix')).toBe(false);
-    expect(isMatchingPath('🐵', './removeSuffix')).toBe(false);
-    expect(isMatchingPath('helpers/*', 'helpers/removeSuffix')).toBe(true);
+    expect(isMatchingPath('@app/*', './removeSuffix')).toBeFalsy();
+    expect(isMatchingPath('🐵', './removeSuffix')).toBeFalsy();
   });
 });

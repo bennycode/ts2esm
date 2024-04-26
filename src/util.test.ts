@@ -1,5 +1,4 @@
-import {QuoteKind} from 'ts-morph';
-import {getExtension, hasRelativePath, toImport, toImportAssertion} from './util.js';
+import { hasRelativePath, toImport, toImportAssertion } from './util.js';
 
 describe('hasRelativePath', () => {
   it('detects relative imports', () => {
@@ -12,16 +11,6 @@ describe('hasRelativePath', () => {
     // others
     expect(hasRelativePath('node:path')).toBe(false);
     expect(hasRelativePath('vitest')).toBe(false);
-  });
-});
-
-describe('getExtension', () => {
-  it('returns file extensions or empty strings if no extension is found', () => {
-    expect(getExtension(`'./UserAPI'`, QuoteKind.Single)).toBe('');
-    expect(getExtension(`"../user/UserAPI"`, QuoteKind.Double)).toBe('');
-    expect(getExtension(`"../user/UserAPI.js"`, QuoteKind.Double)).toBe('.js');
-    expect(getExtension(`'../test/fixtures.json'`, QuoteKind.Single)).toBe('.json');
-    expect(getExtension(`"./test/fixtures.json"`, QuoteKind.Double)).toBe('.json');
   });
 });
 
@@ -63,6 +52,15 @@ describe('toImport', () => {
         quoteSymbol: `'`,
       })
     ).toBe(`'../user/UserAPI.js'`);
+
+    expect(
+      toImport({
+        declaration: `"helpers/removeSuffix"`,
+        extension: '.js',
+        quoteSymbol: `"`,
+      })
+    ).toBe(`"helpers/removeSuffix.js"`);
+
     expect(
       toImport({
         declaration: `"./WebSocketClient"`,

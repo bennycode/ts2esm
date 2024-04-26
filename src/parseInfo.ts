@@ -1,6 +1,7 @@
-import type {StringLiteral} from 'ts-morph';
 import path from 'node:path';
-import {getExtension, hasRelativePath} from './util.js';
+import type { StringLiteral } from 'ts-morph';
+import { findBestMatch } from './paths/isMatchingPath.js';
+import { getNormalizedDeclaration, hasRelativePath } from './util.js';
 
 export type ModuleInfo = {
   /** Plain import or export declaration including quotes, i.e. "'../UserAPI'" */
@@ -13,25 +14,36 @@ export type ModuleInfo = {
   quoteSymbol: string;
   /** Declaration without quotes, i.e. "../UserAPI" */
   normalized: string;
+  pathAlias: string;
   /** True, if the path starts with a "." or ".." */
   isRelative: boolean;
   /** Path of the source code file in which the declaration was found, i.e. "src/index.ts" */
   sourceFilePath: string;
 };
 
-export function parseInfo(sourceFilePath: string, stringLiteral: StringLiteral): ModuleInfo {
+/**
+ * @param sourceFilePath The absolute path of the source code file containing import declarations
+ * @param stringLiteral The import literal (i.e. "lodash/endsWith" or "./removeSuffix")
+ */
+export function parseInfo(
+  sourceFilePath: string,
+  stringLiteral: StringLiteral,
+  paths: Record<string, string[]> | undefined
+): ModuleInfo {
   const declaration = stringLiteral.getText();
+  const normalizedDeclaration = getNormalizedDeclaration(stringLiteral);
+  const bestPathAliasMatch = paths ? findBestMatch(paths, normalizedDeclaration) : '';
   const quoteSymbol = stringLiteral.getQuoteKind().toString();
   const directory = path.dirname(sourceFilePath);
-  const extension = getExtension(declaration, quoteSymbol);
-  const normalized = declaration.replaceAll(quoteSymbol, '');
+  const extension = path.extname(normalizedDeclaration);
 
   return {
     declaration,
     directory,
     extension,
-    isRelative: hasRelativePath(normalized),
-    normalized,
+    pathAlias: bestPathAliasMatch,
+    isRelative: hasRelativePath(normalizedDeclaration),
+    normalized: normalizedDeclaration,
     quoteSymbol,
     sourceFilePath,
   };

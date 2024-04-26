@@ -56,7 +56,7 @@
     "clean": "rimraf .nyc_output coverage dist",
     "deploy": "exit 0",
     "dev": "node --inspect --loader ts-node/esm ./src/cli.ts",
-    "dev:bennycode": "npm run dev -- ../ts-demo-npm-cjs/tsconfig.json",
+    "dev:bennycode": "npm run dev -- ../ts-demo-npm-cjs/tsconfig.json --debug",
     "dist": "npm run clean && npm run build",
     "docs": "exit 0",
     "fix": "npm run fix:format && npm run fix:lint",

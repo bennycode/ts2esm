@@ -1,5 +1,5 @@
-import path from 'node:path';
-import type {ModuleInfo} from './parseInfo.js';
+import { type StringLiteral } from 'ts-morph';
+import { type ModuleInfo } from './parseInfo.js';
 
 export function hasRelativePath(path: string) {
   if (path === '.' || path === '..') {
@@ -8,9 +8,10 @@ export function hasRelativePath(path: string) {
   return path.startsWith('./') || path.startsWith('../');
 }
 
-export function getExtension(importPath: string, quoteSymbol: string) {
-  const fileName = importPath.replaceAll(quoteSymbol, '');
-  return path.extname(fileName);
+export function getNormalizedDeclaration(stringLiteral: StringLiteral) {
+  const declaration = stringLiteral.getText();
+  const quoteSymbol = stringLiteral.getQuoteKind().toString();
+  return declaration.replaceAll(quoteSymbol, '');
 }
 
 export function toImportAssertion({

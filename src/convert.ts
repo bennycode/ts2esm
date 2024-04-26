@@ -1,16 +1,21 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {Project, type ProjectOptions, StringLiteral, SyntaxKind} from 'ts-morph';
-import {toImport, toImportAssertion} from './util.js';
-import {type ModuleInfo, parseInfo} from './parseInfo.js';
+import { Project, StringLiteral, SyntaxKind, type ProjectOptions } from 'ts-morph';
+import { parseInfo, type ModuleInfo } from './parseInfo.js';
+import { toImport, toImportAssertion } from './util.js';
 
 export function convert(options: ProjectOptions, debugLogging: boolean = false) {
   const project = new Project(options);
 
+  const paths = project.getCompilerOptions().paths;
+  if (paths && debugLogging) {
+    console.log('Found path aliases (🧪):', paths);
+  }
+
   project.getSourceFiles().forEach(sourceFile => {
     const filePath = sourceFile.getFilePath();
     if (debugLogging) {
-      console.log(` Checking: ${filePath}`);
+      console.log(` Checking (🧪): ${filePath}`);
     }
 
     let madeChanges: boolean = false;
@@ -18,14 +23,14 @@ export function convert(options: ProjectOptions, debugLogging: boolean = false) 
     sourceFile.getImportDeclarations().forEach(importDeclaration => {
       importDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
         const hasAssertClause = !!importDeclaration.getAssertClause();
-        const adjustedImport = rewrite(filePath, stringLiteral, hasAssertClause);
+        const adjustedImport = rewrite(filePath, stringLiteral, hasAssertClause, paths);
         madeChanges ||= adjustedImport;
       });
     });
 
     sourceFile.getExportDeclarations().forEach(exportDeclaration => {
       exportDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
-        const adjustedExport = rewrite(filePath, stringLiteral);
+        const adjustedExport = rewrite(filePath, stringLiteral, false, undefined);
         madeChanges ||= adjustedExport;
       });
     });
@@ -37,8 +42,8 @@ export function convert(options: ProjectOptions, debugLogging: boolean = false) 
   });
 }
 
-function rewrite(sourceFilePath: string, stringLiteral: StringLiteral, hasAssertClause: boolean = false) {
-  const info = parseInfo(sourceFilePath, stringLiteral);
+function rewrite(sourceFilePath: string, stringLiteral: StringLiteral, hasAssertClause: boolean, paths: Record<string, string[]> | undefined) {
+  const info = parseInfo(sourceFilePath, stringLiteral, paths);
   const replacement = createReplacementPath(info, hasAssertClause);
   if (replacement) {
     stringLiteral.replaceWithText(replacement);
