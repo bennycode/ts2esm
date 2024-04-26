@@ -6,9 +6,8 @@ export function isMatchingPath(pattern: string, path: string) {
   const normalized = pattern.replace('/*', '').replace('*', '');
   if (path.startsWith(normalized)) {
     return pattern.length;
-  } else {
-    return 0;
   }
+  return 0;
 }
 
 export function findBestMatch(aliasMap: Record<string, string[]>, path: string) {

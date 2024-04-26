@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { Project, StringLiteral, SyntaxKind, type ProjectOptions } from 'ts-morph';
-import { parseInfo, type ModuleInfo } from './parseInfo.js';
-import { toImport, toImportAssertion } from './util.js';
+import {Project, StringLiteral, SyntaxKind, type ProjectOptions} from 'ts-morph';
+import {parseInfo, type ModuleInfo} from './parseInfo.js';
+import {toImport, toImportAssertion} from './util.js';
 
 export function convert(options: ProjectOptions, debugLogging: boolean = false) {
   const project = new Project(options);
@@ -42,7 +42,12 @@ export function convert(options: ProjectOptions, debugLogging: boolean = false) 
   });
 }
 
-function rewrite(sourceFilePath: string, stringLiteral: StringLiteral, hasAssertClause: boolean, paths: Record<string, string[]> | undefined) {
+function rewrite(
+  sourceFilePath: string,
+  stringLiteral: StringLiteral,
+  hasAssertClause: boolean,
+  paths: Record<string, string[]> | undefined
+) {
   const info = parseInfo(sourceFilePath, stringLiteral, paths);
   const replacement = createReplacementPath(info, hasAssertClause);
   if (replacement) {

@@ -1,4 +1,4 @@
-import { hasRelativePath, toImport, toImportAssertion } from './util.js';
+import {hasRelativePath, toImport, toImportAssertion} from './util.js';
 
 describe('hasRelativePath', () => {
   it('detects relative imports', () => {

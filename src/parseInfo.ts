@@ -1,7 +1,7 @@
 import path from 'node:path';
-import type { StringLiteral } from 'ts-morph';
-import { findBestMatch } from './paths/isMatchingPath.js';
-import { getNormalizedDeclaration, hasRelativePath } from './util.js';
+import type {StringLiteral} from 'ts-morph';
+import {findBestMatch} from './paths/isMatchingPath.js';
+import {getNormalizedDeclaration, hasRelativePath} from './util.js';
 
 export type ModuleInfo = {
   /** Plain import or export declaration including quotes, i.e. "'../UserAPI'" */
@@ -41,9 +41,9 @@ export function parseInfo(
     declaration,
     directory,
     extension,
-    pathAlias: bestPathAliasMatch,
     isRelative: hasRelativePath(normalizedDeclaration),
     normalized: normalizedDeclaration,
+    pathAlias: bestPathAliasMatch,
     quoteSymbol,
     sourceFilePath,
   };

@@ -1,5 +1,5 @@
-import { type StringLiteral } from 'ts-morph';
-import { type ModuleInfo } from './parseInfo.js';
+import type {StringLiteral} from 'ts-morph';
+import type {ModuleInfo} from './parseInfo.js';
 
 export function hasRelativePath(path: string) {
   if (path === '.' || path === '..') {
