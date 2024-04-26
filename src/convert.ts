@@ -26,10 +26,10 @@ export function convert(options: ProjectOptions, debugLogging: boolean = false) 
       importDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
         const hasAssertClause = !!importDeclaration.getAssertClause();
         const adjustedImport = rewrite({
-          sourceFilePath: filePath,
           hasAssertClause,
           paths,
           projectDirectory,
+          sourceFilePath: filePath,
           stringLiteral,
         });
         madeChanges ||= adjustedImport;
@@ -70,7 +70,7 @@ function rewrite({
   stringLiteral: StringLiteral;
 }) {
   const info = parseInfo(sourceFilePath, stringLiteral, paths);
-  const replacement = createReplacementPath({info, hasAssertClause, paths, projectDirectory});
+  const replacement = createReplacementPath({hasAssertClause, info, paths, projectDirectory});
   if (replacement) {
     stringLiteral.replaceWithText(replacement);
     return true;
