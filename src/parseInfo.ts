@@ -1,6 +1,6 @@
 import path from 'node:path';
 import type {StringLiteral} from 'ts-morph';
-import {findBestMatch} from './paths/isMatchingPath.js';
+import {findBestMatch} from './util/PathAliasUtil.js';
 import {getNormalizedDeclaration, hasRelativePath} from './util.js';
 
 export type ModuleInfo = {
