@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {Project, StringLiteral, SyntaxKind, type ProjectOptions} from 'ts-morph';
-import {parseInfo, type ModuleInfo} from './parseInfo.js';
-import {toImport, toImportAssertion} from './util.js';
+import { Project, StringLiteral, SyntaxKind, type ProjectOptions } from 'ts-morph';
+import { parseInfo, type ModuleInfo } from './parseInfo.js';
+import { toImport, toImportAssertion } from './util.js';
 
 export function convert(options: ProjectOptions, debugLogging: boolean = false) {
   const project = new Project(options);
@@ -62,15 +62,19 @@ function createReplacementPath(info: ModuleInfo, hasAssertClause: boolean) {
     return null;
   }
 
-  if (info.isRelative) {
-    if (info.extension === '.json' || info.extension === '.css') {
+  const comesFromPathAlias = !!info.pathAlias;
+
+  if (info.isRelative || comesFromPathAlias) {
+    if (['.json', '.css'].includes(info.extension)) {
       return toImportAssertion(info);
     }
 
     // If an import does not have a file extension or isn't an extension recognized here and can't be found locally (perhaps
     // file had . in name), try to find a matching file by traversing through all valid TypeScript source file extensions.
     const baseFilePath = path.join(info.directory, info.normalized);
-    if (info.extension === '' || (!['.js', '.cjs', '.mjs'].includes(info.extension) && !fs.existsSync(baseFilePath))) {
+    // TODO: Construct a different base file path when an alias (like @helpers) is being used
+    const hasNoJSExtension = !['.js', '.cjs', '.mjs'].includes(info.extension);
+    if (info.extension === '' || (hasNoJSExtension && !fs.existsSync(baseFilePath))) {
       for (const bareOrIndex of ['', '/index']) {
         for (const replacement of [
           // Sorted by expected most common to least common for performance.
