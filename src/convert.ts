@@ -3,7 +3,7 @@ import path from 'node:path';
 import {Project, StringLiteral, SyntaxKind, type ProjectOptions} from 'ts-morph';
 import {parseInfo, type ModuleInfo} from './parser/InfoParser.js';
 import {getNormalizedPath} from './util/PathUtil.js';
-import {toImport, toImportAssertion} from './writer/ImportWriter.js';
+import {toImport, toImportAssertion} from './converter/ImportConverter.js';
 
 /**
  * Traverses all source code files from a project and checks its import and export declarations.
