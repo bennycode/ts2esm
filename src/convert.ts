@@ -1,10 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {Project, StringLiteral, SyntaxKind, type ProjectOptions} from 'ts-morph';
-import {parseInfo, type ModuleInfo} from './parseInfo.js';
-import {getNormalizedPath} from './util/PathAliasUtil.js';
-import {toImport, toImportAssertion} from './util.js';
+import {parseInfo, type ModuleInfo} from './parser/InfoParser.js';
+import {getNormalizedPath} from './util/PathUtil.js';
+import {toImport, toImportAssertion} from './writer/ImportWriter.js';
 
+/**
+ * Traverses all source code files from a project and checks its import and export declarations.
+ */
 export function convert(options: ProjectOptions, debugLogging: boolean = false) {
   const project = new Project(options);
   const projectDirectory = project.getRootDirectories()[0]?.getPath() || '';

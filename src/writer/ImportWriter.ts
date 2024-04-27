@@ -1,18 +1,4 @@
-import type {StringLiteral} from 'ts-morph';
-import type {ModuleInfo} from './parseInfo.js';
-
-export function hasRelativePath(path: string) {
-  if (path === '.' || path === '..') {
-    return true;
-  }
-  return path.startsWith('./') || path.startsWith('../');
-}
-
-export function getNormalizedDeclaration(stringLiteral: StringLiteral) {
-  const declaration = stringLiteral.getText();
-  const quoteSymbol = stringLiteral.getQuoteKind().toString();
-  return declaration.replaceAll(quoteSymbol, '');
-}
+import type { ModuleInfo } from '../parser/InfoParser.js';
 
 export function toImportAssertion({
   declaration,

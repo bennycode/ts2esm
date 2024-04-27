@@ -1,18 +1,4 @@
-import {hasRelativePath, toImport, toImportAssertion} from './util.js';
-
-describe('hasRelativePath', () => {
-  it('detects relative imports', () => {
-    // relative paths
-    expect(hasRelativePath('.')).toBe(true);
-    expect(hasRelativePath('..')).toBe(true);
-    expect(hasRelativePath('./user')).toBe(true);
-    expect(hasRelativePath('../user/UserAPI')).toBe(true);
-    expect(hasRelativePath('../test/fixtures.json')).toBe(true);
-    // others
-    expect(hasRelativePath('node:path')).toBe(false);
-    expect(hasRelativePath('vitest')).toBe(false);
-  });
-});
+import { toImport, toImportAssertion } from './ImportWriter.js';
 
 describe('toImportAssertion', () => {
   it('supports JSON Import Assertions', () => {

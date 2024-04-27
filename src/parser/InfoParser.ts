@@ -1,7 +1,6 @@
 import path from 'node:path';
-import type {StringLiteral} from 'ts-morph';
-import {findBestMatch} from './util/PathAliasUtil.js';
-import {getNormalizedDeclaration, hasRelativePath} from './util.js';
+import type { StringLiteral } from 'ts-morph';
+import { findBestMatch, hasRelativePath } from '../util/PathUtil.js';
 
 export type ModuleInfo = {
   /** Plain import or export declaration including quotes, i.e. "'../UserAPI'" */
@@ -20,6 +19,12 @@ export type ModuleInfo = {
   /** Path of the source code file in which the declaration was found, i.e. "src/index.ts" */
   sourceFilePath: string;
 };
+
+export function getNormalizedDeclaration(stringLiteral: StringLiteral) {
+  const declaration = stringLiteral.getText();
+  const quoteSymbol = stringLiteral.getQuoteKind().toString();
+  return declaration.replaceAll(quoteSymbol, '');
+}
 
 /**
  * @param sourceFilePath The absolute path of the source code file containing import declarations

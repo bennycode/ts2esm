@@ -1,6 +1,6 @@
-import {findBestMatch, getNormalizedPath, isMatchingPath, removePathAlias, removeWildCards} from './PathAliasUtil.js';
+import {findBestMatch, getNormalizedPath, hasRelativePath, isMatchingPath, removePathAlias, removeWildCards} from './PathUtil.js';
 
-describe('PathAliasUtil', () => {
+describe('PathUtil', () => {
   describe('removeWildCards', () => {
     it('removes asterisks from type alias patterns', () => {
       expect(removeWildCards('@helpers/*')).toBe('@helpers');
@@ -60,5 +60,19 @@ describe('PathAliasUtil', () => {
     };
 
     expect(getNormalizedPath(projectDirectory, info, paths)).toBe(expectation);
+  });
+
+  describe('hasRelativePath', () => {
+    it('detects relative imports', () => {
+      // relative paths
+      expect(hasRelativePath('.')).toBe(true);
+      expect(hasRelativePath('..')).toBe(true);
+      expect(hasRelativePath('./user')).toBe(true);
+      expect(hasRelativePath('../user/UserAPI')).toBe(true);
+      expect(hasRelativePath('../test/fixtures.json')).toBe(true);
+      // others
+      expect(hasRelativePath('node:path')).toBe(false);
+      expect(hasRelativePath('vitest')).toBe(false);
+    });
   });
 });

@@ -1,5 +1,5 @@
 import path from 'node:path';
-import type {ModuleInfo} from '../parseInfo.js';
+import type {ModuleInfo} from '../parser/InfoParser.js';
 
 /**
  * When multiple patterns match a module specifier, the pattern with the longest matching prefix before any * token is used. That's why the length of the matching pattern is being returned instead of just a boolean value.
@@ -43,4 +43,11 @@ export function getNormalizedPath(
   const normalizedResolution = removeWildCards(pathAliasResolution).replaceAll(info.quoteSymbol, '');
   const normalizedFilePath = removePathAlias(info.pathAlias, info.normalized);
   return path.join(projectDirectory, normalizedResolution, normalizedFilePath);
+}
+
+export function hasRelativePath(path: string) {
+  if (path === '.' || path === '..') {
+    return true;
+  }
+  return path.startsWith('./') || path.startsWith('../');
 }
