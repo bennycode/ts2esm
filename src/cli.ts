@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import {convert} from './convert.js';
+import {convert} from './main.js';
 import {input} from '@inquirer/prompts';
 
 const args = process.argv.slice(2);
