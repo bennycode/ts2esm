@@ -1,32 +1,32 @@
-import {toImport, toImportAssertion} from './ImportConverter.js';
+import {toImport, toImportAttribute} from './ImportConverter.js';
 
 describe('ImportConverter', () => {
-  describe('toImportAssertion', () => {
-    it('supports JSON Import Assertions', () => {
+  describe('toImportAttribute', () => {
+    it('supports JSON Import Attributes', () => {
       expect(
-        toImportAssertion({
+        toImportAttribute({
           declaration: `'./test/fixtures.json'`,
           extension: '.json',
           quoteSymbol: `'`,
         })
-      ).toBe(`'./test/fixtures.json' assert {type: 'json'}`);
+      ).toBe(`'./test/fixtures.json' with { type: 'json' }`);
       expect(
-        toImportAssertion({
+        toImportAttribute({
           declaration: `"../test/fixtures.json"`,
           extension: '.json',
           quoteSymbol: `"`,
         })
-      ).toBe(`"../test/fixtures.json" assert {type: "json"}`);
+      ).toBe(`"../test/fixtures.json" with { type: "json" }`);
     });
 
-    it('supports CSS Import Assertions', () => {
+    it('supports CSS Import Attributes', () => {
       expect(
-        toImportAssertion({
+        toImportAttribute({
           declaration: `'./MyComponent.module.css'`,
           extension: '.css',
           quoteSymbol: `'`,
         })
-      ).toBe(`'./MyComponent.module.css' assert {type: 'css'}`);
+      ).toBe(`'./MyComponent.module.css' with { type: 'css' }`);
     });
   });
 

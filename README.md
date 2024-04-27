@@ -16,6 +16,9 @@ Convert your CommonJS projects (TypeScript or JavaScript) into ECMAScript module
 > [!IMPORTANT]  
 > Use TypeScript 5.2 or later as there have been [breaking changes to the Node.js settings](https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/#breaking-changes-and-correctness-fixes), which you don't want to miss.
 
+> [!IMPORTANT]  
+> TypeScript 5.3 introduced a [breaking change with import attributes](https://devblogs.microsoft.com/typescript/announcing-typescript-5-3-beta/#import-attributes) as they deprecate import assertions.
+
 ## Video Tutorial
 
 Watch this 5-minute video and learn how to migrate from CommonJS to ESM:
@@ -58,7 +61,7 @@ export * from './account/index.js';
 export * from './UserAPI.js';
 ```
 
-### JSON Import Assertions
+### JSON Import Attributes
 
 Before:
 
@@ -69,10 +72,10 @@ import listAccounts from '../test/fixtures/listAccounts.json';
 After:
 
 ```ts
-import listAccounts from '../test/fixtures/listAccounts.json' assert {type: 'json'};
+import listAccounts from '../test/fixtures/listAccounts.json' with {type: 'json'};
 ```
 
-### CSS Import Assertions
+### CSS Import Attributes
 
 Before:
 
@@ -83,7 +86,7 @@ import styles from './MyComponent.module.css';
 After:
 
 ```ts
-import styles from './MyComponent.module.css' assert {type: 'css'};
+import styles from './MyComponent.module.css' with {type: 'css'};
 ```
 
 ## Installation

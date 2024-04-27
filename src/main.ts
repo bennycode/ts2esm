@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {Project, StringLiteral, SyntaxKind, type ProjectOptions} from 'ts-morph';
+import {ModuleKind, Project, StringLiteral, SyntaxKind, type ProjectOptions} from 'ts-morph';
 import {parseInfo, type ModuleInfo} from './parser/InfoParser.js';
 import {getNormalizedPath} from './util/PathUtil.js';
-import {toImport, toImportAssertion} from './converter/ImportConverter.js';
+import {toImport, toImportAttribute} from './converter/ImportConverter.js';
 
 /**
  * Traverses all source code files from a project and checks its import and export declarations.
@@ -27,9 +27,9 @@ export function convert(options: ProjectOptions, debugLogging: boolean = false) 
 
     sourceFile.getImportDeclarations().forEach(importDeclaration => {
       importDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
-        const hasAssertClause = !!importDeclaration.getAssertClause();
+        const hasAttributesClause = !!importDeclaration.getAttributes();
         const adjustedImport = rewrite({
-          hasAssertClause,
+          hasAttributesClause,
           paths,
           projectDirectory,
           sourceFilePath: filePath,
@@ -42,7 +42,7 @@ export function convert(options: ProjectOptions, debugLogging: boolean = false) 
     sourceFile.getExportDeclarations().forEach(exportDeclaration => {
       exportDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
         const adjustedExport = rewrite({
-          hasAssertClause: false,
+          hasAttributesClause: false,
           paths: undefined,
           projectDirectory,
           sourceFilePath: filePath,
@@ -60,20 +60,20 @@ export function convert(options: ProjectOptions, debugLogging: boolean = false) 
 }
 
 function rewrite({
-  hasAssertClause,
+  hasAttributesClause,
   paths,
   projectDirectory,
   sourceFilePath,
   stringLiteral,
 }: {
-  hasAssertClause: boolean;
+  hasAttributesClause: boolean;
   paths: Record<string, string[]> | undefined;
   projectDirectory: string;
   sourceFilePath: string;
   stringLiteral: StringLiteral;
 }) {
   const info = parseInfo(sourceFilePath, stringLiteral, paths);
-  const replacement = createReplacementPath({hasAssertClause, info, paths, projectDirectory});
+  const replacement = createReplacementPath({hasAttributesClause, info, paths, projectDirectory});
   if (replacement) {
     stringLiteral.replaceWithText(replacement);
     return true;
@@ -82,17 +82,17 @@ function rewrite({
 }
 
 function createReplacementPath({
-  hasAssertClause,
+  hasAttributesClause,
   info,
   paths,
   projectDirectory,
 }: {
-  hasAssertClause: boolean;
+  hasAttributesClause: boolean;
   info: ModuleInfo;
   paths: Record<string, string[]> | undefined;
   projectDirectory: string;
 }) {
-  if (hasAssertClause) {
+  if (hasAttributesClause) {
     return null;
   }
 
@@ -100,7 +100,7 @@ function createReplacementPath({
 
   if (info.isRelative || comesFromPathAlias) {
     if (['.json', '.css'].includes(info.extension)) {
-      return toImportAssertion(info);
+      return toImportAttribute(info);
     }
 
     // If an import does not have a file extension or isn't an extension recognized here and can't be found locally (perhaps

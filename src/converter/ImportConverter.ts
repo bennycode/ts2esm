@@ -1,12 +1,12 @@
 import type {ModuleInfo} from '../parser/InfoParser.js';
 
-export function toImportAssertion({
+export function toImportAttribute({
   declaration,
   quoteSymbol,
   extension,
 }: Pick<ModuleInfo, 'declaration' | 'quoteSymbol' | 'extension'>) {
   const type = extension.replace('.', '');
-  const importAssertion = `assert {type: ${quoteSymbol}${type}${quoteSymbol}}`;
+  const importAssertion = `with { type: ${quoteSymbol}${type}${quoteSymbol} }`;
   return `${declaration} ${importAssertion}`;
 }
 
