@@ -1,4 +1,4 @@
-import { toImport, toImportAssertion } from './ImportWriter.js';
+import {toImport, toImportAssertion} from './ImportWriter.js';
 
 describe('toImportAssertion', () => {
   it('supports JSON Import Assertions', () => {

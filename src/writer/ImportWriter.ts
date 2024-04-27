@@ -1,4 +1,4 @@
-import type { ModuleInfo } from '../parser/InfoParser.js';
+import type {ModuleInfo} from '../parser/InfoParser.js';
 
 export function toImportAssertion({
   declaration,

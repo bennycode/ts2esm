@@ -1,6 +1,6 @@
 import path from 'node:path';
-import type { StringLiteral } from 'ts-morph';
-import { findBestMatch, hasRelativePath } from '../util/PathUtil.js';
+import type {StringLiteral} from 'ts-morph';
+import {findBestMatch, hasRelativePath} from '../util/PathUtil.js';
 
 export type ModuleInfo = {
   /** Plain import or export declaration including quotes, i.e. "'../UserAPI'" */

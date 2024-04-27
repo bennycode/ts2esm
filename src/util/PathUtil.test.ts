@@ -1,4 +1,11 @@
-import {findBestMatch, getNormalizedPath, hasRelativePath, isMatchingPath, removePathAlias, removeWildCards} from './PathUtil.js';
+import {
+  findBestMatch,
+  getNormalizedPath,
+  hasRelativePath,
+  isMatchingPath,
+  removePathAlias,
+  removeWildCards,
+} from './PathUtil.js';
 
 describe('PathUtil', () => {
   describe('removeWildCards', () => {
