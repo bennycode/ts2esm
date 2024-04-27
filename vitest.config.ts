@@ -8,5 +8,6 @@ export default defineConfig({
       reporter: ['html', 'lcov', 'text'],
     },
     environment: 'node',
+    globals: true,
   },
 });

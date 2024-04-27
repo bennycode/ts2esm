@@ -1,10 +1,12 @@
 # ts2esm
 
-Converts your TypeScript import & export declarations into ESM-compatible declarations. 🪄
+You want to transform your project into an ECMAScript module (ESM)? Look no further! This tool (`ts2esm`) converts your TypeScript import and export declarations into ESM-compatible ones. 🪄
+
+It also [works with JavaScript](https://github.com/bennycode/ts2esm/issues/20#issuecomment-1894702085) projects since TypeScript is a superset of JavaScript.
 
 ## Guide
 
-Convert your CommonJS TypeScript project into an ECMAScript module with these simple steps:
+Convert your CommonJS projects (TypeScript or JavaScript) into ECMAScript modules with these simple steps:
 
 1. Add `"type": "module"` in your `package.json`
 2. Set [module](https://www.typescriptlang.org/tsconfig#module) to `"nodenext"` in your `tsconfig.json`
@@ -22,32 +24,34 @@ Watch this 5-minute video and learn how to migrate from CommonJS to ESM:
 
 ## Examples
 
-### Imports
+Here you can see the transformations that `ts2esm` applies.
 
-Turns:
+### Import Declarations
+
+Before:
 
 ```ts
 import {AccountAPI} from '../account';
 import {RESTClient} from './client/RESTClient';
 ```
 
-Into:
+After:
 
 ```ts
 import {AccountAPI} from '../account/index.js';
 import {RESTClient} from './client/RESTClient.js';
 ```
 
-### Exports
+### Export Declarations
 
-Turns:
+Before:
 
 ```ts
 export * from './account';
 export * from './UserAPI';
 ```
 
-Into:
+After:
 
 ```ts
 export * from './account/index.js';
@@ -56,13 +60,13 @@ export * from './UserAPI.js';
 
 ### JSON Import Assertions
 
-Turns:
+Before:
 
 ```ts
 import listAccounts from '../test/fixtures/listAccounts.json';
 ```
 
-Into:
+After:
 
 ```ts
 import listAccounts from '../test/fixtures/listAccounts.json' assert {type: 'json'};
@@ -70,13 +74,13 @@ import listAccounts from '../test/fixtures/listAccounts.json' assert {type: 'jso
 
 ### CSS Import Assertions
 
-Turns:
+Before:
 
 ```ts
 import styles from './MyComponent.module.css';
 ```
 
-Into:
+After:
 
 ```ts
 import styles from './MyComponent.module.css' assert {type: 'css'};
@@ -90,19 +94,19 @@ Simply run this command to install `ts2esm` globally on your machine:
 npm i -g ts2esm
 ```
 
-Afterwards, just launch the program inside the directory of your TS project (it will ask you for your `tsconfig.json`):
+Afterwards, just launch the program inside the directory of your project (it will ask you for your `tsconfig.json`):
 
 ```bash
 ts2esm
 ```
 
-Or you can provide a list of tsconfig paths (no prompt):
+You can also provide a list of tsconfigs (no prompt):
 
 ```bash
 ts2esm packages/foo/tsconfig.json packages/bar/tsconfig.json
 ```
 
-You can also enable verbose logging with:
+There is also a debug mode with verbose logging:
 
 ```bash
 ts2esm --debug

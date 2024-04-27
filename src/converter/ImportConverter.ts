@@ -1,17 +1,4 @@
-import path from 'node:path';
-import type {ModuleInfo} from './parseInfo.js';
-
-export function hasRelativePath(path: string) {
-  if (path === '.' || path === '..') {
-    return true;
-  }
-  return path.startsWith('./') || path.startsWith('../');
-}
-
-export function getExtension(importPath: string, quoteSymbol: string) {
-  const fileName = importPath.replaceAll(quoteSymbol, '');
-  return path.extname(fileName);
-}
+import type {ModuleInfo} from '../parser/InfoParser.js';
 
 export function toImportAssertion({
   declaration,
