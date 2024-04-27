@@ -17,7 +17,7 @@ Convert your CommonJS projects (TypeScript or JavaScript) into ECMAScript module
 > Use TypeScript 5.2 or later as there have been [breaking changes to the Node.js settings](https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/#breaking-changes-and-correctness-fixes), which you don't want to miss.
 
 > [!IMPORTANT]  
-> TypeScript 5.3 introduced a [breaking change with import attributes](https://devblogs.microsoft.com/typescript/announcing-typescript-5-3-beta/#import-attributes) as they deprecate import assertions.
+> Since TypeScript 5.3 import assertions are [replaced with import attributes](https://devblogs.microsoft.com/typescript/announcing-typescript-5-3-beta/#import-attributes).
 
 ## Video Tutorial
 
@@ -36,6 +36,7 @@ Before:
 ```ts
 import {AccountAPI} from '../account';
 import {RESTClient} from './client/RESTClient';
+import {removeSuffix} from '@helpers/removeSuffix';
 ```
 
 After:
@@ -43,6 +44,7 @@ After:
 ```ts
 import {AccountAPI} from '../account/index.js';
 import {RESTClient} from './client/RESTClient.js';
+import {removeSuffix} from '@helpers/removeSuffix.js';
 ```
 
 ### Export Declarations
