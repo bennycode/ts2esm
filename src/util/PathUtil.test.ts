@@ -33,6 +33,18 @@ describe('PathUtil', () => {
 
       expect(findBestMatch(aliasMap, importPath)).toBe('foo/bar');
     });
+
+    it('returns an empty string if there is no match', () => {
+      const aliasMap ={
+        "@helpers/*": ["./src/helpers/*"],
+        "helpers/*": ["./src/helpers/*"],
+        "~/*": ["./src/*"]
+      };
+
+      const importPath = '../getNumber';
+
+      expect(findBestMatch(aliasMap, importPath)).toBe('');
+    });
   });
 
   describe('isMatchingPath', () => {

@@ -41,9 +41,10 @@ export function convert(options: ProjectOptions, debugLogging: boolean = false) 
 
     sourceFile.getExportDeclarations().forEach(exportDeclaration => {
       exportDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
+        const hasAttributesClause = !!exportDeclaration.getAttributes();
         const adjustedExport = rewrite({
-          hasAttributesClause: false,
-          paths: undefined,
+          hasAttributesClause,
+          paths,
           projectDirectory,
           sourceFilePath: filePath,
           stringLiteral,
@@ -112,21 +113,21 @@ function createReplacementPath({
     const hasNoJSExtension = !['.js', '.cjs', '.mjs'].includes(info.extension);
     if (info.extension === '' || (hasNoJSExtension && !fs.existsSync(baseFilePath))) {
       for (const bareOrIndex of ['', '/index']) {
-        for (const replacement of [
+        for (const extension of [
           // Sorted by expected most common to least common for performance.
-          {candidate: '.ts', newExtension: '.js'},
-          {candidate: '.tsx', newExtension: '.js'},
-          {candidate: '.js', newExtension: '.js'},
-          {candidate: '.jsx', newExtension: '.js'},
-          {candidate: '.cts', newExtension: '.cjs'},
-          {candidate: '.mts', newExtension: '.mjs'},
-          {candidate: '.cjs', newExtension: '.cjs'},
-          {candidate: '.mjs', newExtension: '.mjs'},
+          {old: '.ts', new: '.js'},
+          {old: '.tsx', new: '.js'},
+          {old: '.js', new: '.js'},
+          {old: '.jsx', new: '.js'},
+          {old: '.cts', new: '.cjs'},
+          {old: '.mts', new: '.mjs'},
+          {old: '.cjs', new: '.cjs'},
+          {old: '.mjs', new: '.mjs'},
         ]) {
+          const fileCandidate = `${baseFilePath}${bareOrIndex}${extension.old}`;
           // If a valid file has been found, create a fully-specified path (including the file extension) for it.
-          const fileCandidate = `${baseFilePath}${bareOrIndex}${replacement.candidate}`;
           if (fs.existsSync(fileCandidate)) {
-            return toImport({...info, extension: `${bareOrIndex}${replacement.newExtension}`});
+            return toImport({...info, extension: `${bareOrIndex}${extension.new}`});
           }
         }
       }
