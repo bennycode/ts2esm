@@ -1,5 +1,4 @@
-import {ModuleInfo} from '../parseInfo.js';
-import {findBestMatch, getNormalizedPath, isMatchingPath, removePathAlias, removeWildCards} from './PathAliasUtil.js';
+import { findBestMatch, getNormalizedPath, isMatchingPath, removePathAlias, removeWildCards } from './PathAliasUtil.js';
 
 describe('PathAliasUtil', () => {
   describe('removeWildCards', () => {
