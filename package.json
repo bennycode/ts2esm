@@ -41,7 +41,7 @@
     "typescript"
   ],
   "license": "MIT",
-  "main": "dist/src/index.js",
+  "main": "dist/src/main.js",
   "name": "ts2esm",
   "private": false,
   "repository": {
