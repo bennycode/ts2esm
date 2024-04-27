@@ -115,14 +115,14 @@ function createReplacementPath({
       for (const bareOrIndex of ['', '/index']) {
         for (const extension of [
           // Sorted by expected most common to least common for performance.
-          {new: '.js', candidate: '.ts'},
-          {new: '.js', candidate: '.tsx'},
-          {new: '.js', candidate: '.js'},
-          {new: '.js', candidate: '.jsx'},
-          {new: '.cjs', candidate: '.cts'},
-          {new: '.mjs', candidate: '.mts'},
-          {new: '.cjs', candidate: '.cjs'},
-          {new: '.mjs', candidate: '.mjs'},
+          {candidate: '.ts', new: '.js'},
+          {candidate: '.tsx', new: '.js'},
+          {candidate: '.js', new: '.js'},
+          {candidate: '.jsx', new: '.js'},
+          {candidate: '.cts', new: '.cjs'},
+          {candidate: '.mts', new: '.mjs'},
+          {candidate: '.cjs', new: '.cjs'},
+          {candidate: '.mjs', new: '.mjs'},
         ]) {
           const fileCandidate = `${baseFilePath}${bareOrIndex}${extension.old}`;
           // If a valid file has been found, create a fully-specified path (including the file extension) for it.
