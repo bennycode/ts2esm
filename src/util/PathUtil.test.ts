@@ -35,10 +35,10 @@ describe('PathUtil', () => {
     });
 
     it('returns an empty string if there is no match', () => {
-      const aliasMap ={
-        "@helpers/*": ["./src/helpers/*"],
-        "helpers/*": ["./src/helpers/*"],
-        "~/*": ["./src/*"]
+      const aliasMap = {
+        '@helpers/*': ['./src/helpers/*'],
+        '~/*': ['./src/*'],
+        'helpers/*': ['./src/helpers/*'],
       };
 
       const importPath = '../getNumber';
