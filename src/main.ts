@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {Project, StringLiteral, SyntaxKind, type ProjectOptions} from 'ts-morph';
+import {toImport, toImportAttribute} from './converter/ImportConverter.js';
 import {parseInfo, type ModuleInfo} from './parser/InfoParser.js';
 import {getNormalizedPath} from './util/PathUtil.js';
-import {toImport, toImportAssertion} from './converter/ImportConverter.js';
 
 /**
  * Traverses all source code files from a project and checks its import and export declarations.
@@ -27,9 +27,9 @@ export function convert(options: ProjectOptions, debugLogging: boolean = false) 
 
     sourceFile.getImportDeclarations().forEach(importDeclaration => {
       importDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
-        const hasAssertClause = !!importDeclaration.getAssertClause();
+        const hasAttributesClause = !!importDeclaration.getAttributes();
         const adjustedImport = rewrite({
-          hasAssertClause,
+          hasAttributesClause,
           paths,
           projectDirectory,
           sourceFilePath: filePath,
@@ -41,9 +41,10 @@ export function convert(options: ProjectOptions, debugLogging: boolean = false) 
 
     sourceFile.getExportDeclarations().forEach(exportDeclaration => {
       exportDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
+        const hasAttributesClause = !!exportDeclaration.getAttributes();
         const adjustedExport = rewrite({
-          hasAssertClause: false,
-          paths: undefined,
+          hasAttributesClause,
+          paths,
           projectDirectory,
           sourceFilePath: filePath,
           stringLiteral,
@@ -60,20 +61,20 @@ export function convert(options: ProjectOptions, debugLogging: boolean = false) 
 }
 
 function rewrite({
-  hasAssertClause,
+  hasAttributesClause,
   paths,
   projectDirectory,
   sourceFilePath,
   stringLiteral,
 }: {
-  hasAssertClause: boolean;
+  hasAttributesClause: boolean;
   paths: Record<string, string[]> | undefined;
   projectDirectory: string;
   sourceFilePath: string;
   stringLiteral: StringLiteral;
 }) {
   const info = parseInfo(sourceFilePath, stringLiteral, paths);
-  const replacement = createReplacementPath({hasAssertClause, info, paths, projectDirectory});
+  const replacement = createReplacementPath({hasAttributesClause, info, paths, projectDirectory});
   if (replacement) {
     stringLiteral.replaceWithText(replacement);
     return true;
@@ -82,17 +83,17 @@ function rewrite({
 }
 
 function createReplacementPath({
-  hasAssertClause,
+  hasAttributesClause,
   info,
   paths,
   projectDirectory,
 }: {
-  hasAssertClause: boolean;
+  hasAttributesClause: boolean;
   info: ModuleInfo;
   paths: Record<string, string[]> | undefined;
   projectDirectory: string;
 }) {
-  if (hasAssertClause) {
+  if (hasAttributesClause) {
     return null;
   }
 
@@ -100,7 +101,7 @@ function createReplacementPath({
 
   if (info.isRelative || comesFromPathAlias) {
     if (['.json', '.css'].includes(info.extension)) {
-      return toImportAssertion(info);
+      return toImportAttribute(info);
     }
 
     // If an import does not have a file extension or isn't an extension recognized here and can't be found locally (perhaps
@@ -112,21 +113,21 @@ function createReplacementPath({
     const hasNoJSExtension = !['.js', '.cjs', '.mjs'].includes(info.extension);
     if (info.extension === '' || (hasNoJSExtension && !fs.existsSync(baseFilePath))) {
       for (const bareOrIndex of ['', '/index']) {
-        for (const replacement of [
+        for (const extension of [
           // Sorted by expected most common to least common for performance.
-          {candidate: '.ts', newExtension: '.js'},
-          {candidate: '.tsx', newExtension: '.js'},
-          {candidate: '.js', newExtension: '.js'},
-          {candidate: '.jsx', newExtension: '.js'},
-          {candidate: '.cts', newExtension: '.cjs'},
-          {candidate: '.mts', newExtension: '.mjs'},
-          {candidate: '.cjs', newExtension: '.cjs'},
-          {candidate: '.mjs', newExtension: '.mjs'},
+          {candidate: '.ts', new: '.js'},
+          {candidate: '.tsx', new: '.js'},
+          {candidate: '.js', new: '.js'},
+          {candidate: '.jsx', new: '.js'},
+          {candidate: '.cts', new: '.cjs'},
+          {candidate: '.mts', new: '.mjs'},
+          {candidate: '.cjs', new: '.cjs'},
+          {candidate: '.mjs', new: '.mjs'},
         ]) {
+          const fileCandidate = `${baseFilePath}${bareOrIndex}${extension.candidate}`;
           // If a valid file has been found, create a fully-specified path (including the file extension) for it.
-          const fileCandidate = `${baseFilePath}${bareOrIndex}${replacement.candidate}`;
           if (fs.existsSync(fileCandidate)) {
-            return toImport({...info, extension: `${bareOrIndex}${replacement.newExtension}`});
+            return toImport({...info, extension: `${bareOrIndex}${extension.new}`});
           }
         }
       }

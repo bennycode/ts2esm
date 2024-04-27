@@ -41,13 +41,14 @@ export function parseInfo(
   const quoteSymbol = stringLiteral.getQuoteKind().toString();
   const directory = path.dirname(sourceFilePath);
   const extension = path.extname(normalizedDeclaration);
+  const isRelative = hasRelativePath(normalizedDeclaration);
 
   return {
     declaration,
     directory,
     extension,
-    isRelative: hasRelativePath(normalizedDeclaration),
-    normalized: normalizedDeclaration,
+    isRelative,
+    normalized: path.relative('.', normalizedDeclaration),
     pathAlias: bestPathAliasMatch,
     quoteSymbol,
     sourceFilePath,

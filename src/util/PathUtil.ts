@@ -22,7 +22,7 @@ export function removePathAlias(alias: string, path: string) {
 }
 
 export function findBestMatch(aliasMap: Record<string, string[]>, path: string) {
-  let bestRank = -1;
+  let bestRank = 0;
   let bestMatch = '';
   for (const key of Object.keys(aliasMap)) {
     const rank = isMatchingPath(key, path);
@@ -34,6 +34,9 @@ export function findBestMatch(aliasMap: Record<string, string[]>, path: string) 
   return bestMatch;
 }
 
+/***
+ * Use this if your path includes a path alias.
+ */
 export function getNormalizedPath(
   projectDirectory: string,
   info: Pick<ModuleInfo, 'pathAlias' | 'quoteSymbol' | 'normalized'>,
