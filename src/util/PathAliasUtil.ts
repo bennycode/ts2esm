@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { ModuleInfo } from '../parseInfo.js';
+import {ModuleInfo} from '../parseInfo.js';
 
 /**
  * When multiple patterns match a module specifier, the pattern with the longest matching prefix before any * token is used. That's why the length of the matching pattern is being returned instead of just a boolean value.
@@ -34,7 +34,11 @@ export function findBestMatch(aliasMap: Record<string, string[]>, path: string) 
   return bestMatch;
 }
 
-export function getNormalizedPath(projectDirectory: string, info: Pick<ModuleInfo, 'pathAlias' | 'quoteSymbol' | 'normalized'>, paths: Record<string, string[]>) {
+export function getNormalizedPath(
+  projectDirectory: string,
+  info: Pick<ModuleInfo, 'pathAlias' | 'quoteSymbol' | 'normalized'>,
+  paths: Record<string, string[]>
+) {
   const pathAliasResolution = `${paths[info.pathAlias]}`;
   const normalizedResolution = removeWildCards(pathAliasResolution).replaceAll(info.quoteSymbol, '');
   const normalizedFilePath = removePathAlias(info.pathAlias, info.normalized);

@@ -19,8 +19,8 @@ describe('PathAliasUtil', () => {
       /** @see https://www.typescriptlang.org/docs/handbook/modules/reference.html#wildcard-substitutions */
       const aliasMap = {
         '*': ['./src/foo/one.ts'],
-        'foo/bar': ['./src/foo/three.ts'],
         'foo/*': ['./src/foo/two.ts'],
+        'foo/bar': ['./src/foo/three.ts'],
       };
 
       const importPath = 'foo/bar';
@@ -55,9 +55,9 @@ describe('PathAliasUtil', () => {
     };
 
     const paths = {
+      '@helpers/*': ['./src/helpers/*'],
       '~/*': ['./src/*'],
       'helpers/*': ['./src/helpers/*'],
-      '@helpers/*': ['./src/helpers/*'],
     };
 
     expect(getNormalizedPath(projectDirectory, info, paths)).toBe(expectation);
