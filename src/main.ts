@@ -124,7 +124,7 @@ function createReplacementPath({
           {candidate: '.cjs', new: '.cjs'},
           {candidate: '.mjs', new: '.mjs'},
         ]) {
-          const fileCandidate = `${baseFilePath}${bareOrIndex}${extension.old}`;
+          const fileCandidate = `${baseFilePath}${bareOrIndex}${extension.candidate}`;
           // If a valid file has been found, create a fully-specified path (including the file extension) for it.
           if (fs.existsSync(fileCandidate)) {
             return toImport({...info, extension: `${bareOrIndex}${extension.new}`});
