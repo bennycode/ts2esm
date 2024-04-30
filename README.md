@@ -99,7 +99,13 @@ Simply run this command to install `ts2esm` globally on your machine:
 npm i -g ts2esm
 ```
 
-Afterwards, just launch the program inside the directory of your project (it will ask you for your `tsconfig.json`):
+You can also run it locally (without being globally installed):
+
+```bash
+npx ts2esm
+```
+
+Just launch the program inside the directory of your project (it will ask you for your `tsconfig.json` path):
 
 ```bash
 ts2esm
@@ -131,6 +137,18 @@ Errors that get automatically fixed (🛠️):
 > error TS2834: Relative import paths need explicit file extensions in EcmaScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path.
 
 > error TS2835: Relative import paths need explicit file extensions in EcmaScript imports when '--moduleResolution' is 'node16' or 'nodenext'.
+
+## Noteworthy
+
+With ESM, you can no longer use Node.js objects like `__filename` or `__dirname`. Here is a simple snippet to replicate their behavior using the [import.meta property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import.meta):
+
+```ts
+import path from 'node:path';
+import url from 'node:url';
+ 
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+```
 
 ## Credits
 
