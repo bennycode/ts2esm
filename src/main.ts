@@ -1,9 +1,9 @@
 import path from 'node:path';
-import { Project, StringLiteral, SyntaxKind, type ProjectOptions } from 'ts-morph';
-import { toImport, toImportAttribute } from './converter/ImportConverter.js';
-import { parseInfo, type ModuleInfo } from './parser/InfoParser.js';
-import { PathFinder } from './util/PathFinder.js';
-import { getNormalizedPath } from './util/PathUtil.js';
+import {Project, StringLiteral, SyntaxKind, type ProjectOptions} from 'ts-morph';
+import {toImport, toImportAttribute} from './converter/ImportConverter.js';
+import {parseInfo, type ModuleInfo} from './parser/InfoParser.js';
+import {PathFinder} from './util/PathFinder.js';
+import {getNormalizedPath} from './util/PathUtil.js';
 
 /**
  * Traverses all source code files from a project and checks its import and export declarations.

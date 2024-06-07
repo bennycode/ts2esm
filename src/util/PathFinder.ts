@@ -20,8 +20,8 @@ export class PathFinder {
           // If a valid file has been found, create a fully-specified path (including the file extension) for it.
           if (fs.existsSync(fileCandidate)) {
             return {
-              file: fileCandidate,
               extension: `${bareOrIndex}${extension.new}`,
+              file: fileCandidate,
             };
           }
         }
