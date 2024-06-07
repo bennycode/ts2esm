@@ -27,9 +27,6 @@ export class PathFinder {
         }
       }
     }
-    if (process.env.NODE_DEBUG) {
-      console.log(`Cannot find path for "${baseFilePath}" with extension "${extension}"`);
-    }
     return null;
   }
 }
