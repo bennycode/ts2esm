@@ -98,7 +98,7 @@ function createReplacementPath({
   }
 
   const comesFromPathAlias = !!info.pathAlias && !!paths;
-  const isNodeModulesPath = !info.isRelative && info.normalized.includes('/');
+  const isNodeModulesPath = !info.isRelative && info.normalized.includes('/') && !comesFromPathAlias;
   if (info.isRelative || comesFromPathAlias || isNodeModulesPath) {
     if (['.json', '.css'].includes(info.extension)) {
       return toImportAttribute(info);
