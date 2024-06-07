@@ -1,9 +1,9 @@
-import fs from 'node:fs';
 import path from 'node:path';
-import {Project, StringLiteral, SyntaxKind, type ProjectOptions} from 'ts-morph';
-import {toImport, toImportAttribute} from './converter/ImportConverter.js';
-import {parseInfo, type ModuleInfo} from './parser/InfoParser.js';
-import {getNormalizedPath} from './util/PathUtil.js';
+import { Project, StringLiteral, SyntaxKind, type ProjectOptions } from 'ts-morph';
+import { toImport, toImportAttribute } from './converter/ImportConverter.js';
+import { parseInfo, type ModuleInfo } from './parser/InfoParser.js';
+import { PathFinder } from './util/PathFinder.js';
+import { getNormalizedPath } from './util/PathUtil.js';
 
 /**
  * Traverses all source code files from a project and checks its import and export declarations.
@@ -110,27 +110,9 @@ function createReplacementPath({
       ? getNormalizedPath(projectDirectory, info, paths)
       : path.join(info.directory, info.normalized);
 
-    const hasNoJSExtension = !['.js', '.cjs', '.mjs'].includes(info.extension);
-    if (info.extension === '' || (hasNoJSExtension && !fs.existsSync(baseFilePath))) {
-      for (const bareOrIndex of ['', '/index']) {
-        for (const extension of [
-          // Sorted by expected most common to least common for performance.
-          {candidate: '.ts', new: '.js'},
-          {candidate: '.tsx', new: '.js'},
-          {candidate: '.js', new: '.js'},
-          {candidate: '.jsx', new: '.js'},
-          {candidate: '.cts', new: '.cjs'},
-          {candidate: '.mts', new: '.mjs'},
-          {candidate: '.cjs', new: '.cjs'},
-          {candidate: '.mjs', new: '.mjs'},
-        ]) {
-          const fileCandidate = `${baseFilePath}${bareOrIndex}${extension.candidate}`;
-          // If a valid file has been found, create a fully-specified path (including the file extension) for it.
-          if (fs.existsSync(fileCandidate)) {
-            return toImport({...info, extension: `${bareOrIndex}${extension.new}`});
-          }
-        }
-      }
+    const foundPath = PathFinder.findPath(baseFilePath, info.extension);
+    if (foundPath) {
+      return toImport({...info, extension: foundPath.extension});
     }
   }
   return null;
