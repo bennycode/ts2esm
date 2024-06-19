@@ -2,6 +2,7 @@
 
 import {convert} from './main.js';
 import {input} from '@inquirer/prompts';
+import {ExitPromptError} from '@inquirer/core';
 
 const args = process.argv.slice(2);
 const options = args.filter(arg => arg.startsWith('--'));
@@ -21,9 +22,13 @@ if (configFiles.length === 0) {
     configFiles.push(
       await input({default: 'tsconfig.json', message: 'Enter the "relative" file path to your TS config'})
     );
-  } catch {
-    // Capturing "Ctrl + C" in "Inquirer" prompts
-    console.log('Goodbye!');
+  } catch (error: unknown) {
+    if (error instanceof ExitPromptError) {
+      // Capturing "Ctrl + C" in "Inquirer" prompts
+      console.log('Goodbye!');
+    } else {
+      throw error;
+    }
   }
 }
 
