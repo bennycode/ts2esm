@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@inquirer/prompts": "^5.0.2",
-    "ts-morph": "^22.0.0",
+    "ts-morph": "^23.0.0",
     "typescript": "^5.4.5"
   },
   "description": "Transforms TypeScript imports and exports into ESM-compatible declarations.",
