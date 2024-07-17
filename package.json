@@ -68,7 +68,7 @@
     "release:major": "npm version major",
     "release:minor": "npm version minor",
     "release:patch": "npm version patch",
-    "start": "ts-node-esm ./src/cli.ts",
+    "start": "node --loader ts-node/esm ./src/cli.ts",
     "test": "npm run test:types && npm run test:unit:coverage",
     "test:types": "tsc --noEmit",
     "test:unit": "vitest run --passWithNoTests",
