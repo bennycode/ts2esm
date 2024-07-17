@@ -154,6 +154,10 @@ const __dirname = path.dirname(__filename);
 
 This program was born from an [inspiring conversation](https://twitter.com/bennycode/status/1693362836695585084) I had with [Basarat Ali Syed](https://twitter.com/basarat). I recommend checking out [Basarat's coding tutorials](https://www.youtube.com/@basarat). 👍
 
+## Used By
+
+[<img src="https://ohif.org/static/c99ccbad57599dbf9f3490519c9b444f/63739/ohif-logo-dark.png" width="256"/>](https://ohif.org/)
+
 ## Vision
 
 Ideally, the extension change would be available as a [codefix in TypeScript](https://github.com/microsoft/TypeScript/tree/v5.3.3/src/services/codefixes) itself. Then all conversions could be applied using [ts-fix](https://github.com/microsoft/ts-fix).
