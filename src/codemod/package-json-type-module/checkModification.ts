@@ -16,9 +16,8 @@ export async function applyModification(packageJsonPath: string) {
       if (yes) {
         fs.writeFileSync(packageJsonPath, JSON.stringify(modified, null, 2));
         return true;
-      } else {
-        return false;
       }
+      return false;
     }
   }
   return false;
