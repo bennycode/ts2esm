@@ -8,10 +8,9 @@ It also [works with JavaScript](https://github.com/bennycode/ts2esm/issues/20#is
 
 Convert your CommonJS projects (TypeScript or JavaScript) into ECMAScript modules with these simple steps:
 
-1. Add `"type": "module"` in your `package.json`
-2. Set [module](https://www.typescriptlang.org/tsconfig#module) to `"nodenext"` in your `tsconfig.json`
-3. Set [moduleResolution](https://www.typescriptlang.org/tsconfig#moduleResolution) to `"nodenext"` in your `tsconfig.json`
-4. Run `ts2esm` in the directory of your TypeScript project
+1. Set [module](https://www.typescriptlang.org/tsconfig#module) to `"nodenext"` in your `tsconfig.json`
+2. Set [moduleResolution](https://www.typescriptlang.org/tsconfig#moduleResolution) to `"nodenext"` in your `tsconfig.json`
+3. Run `ts2esm` in the directory of your TypeScript project
 
 > [!IMPORTANT]  
 > Use TypeScript 5.2 or later as there have been [breaking changes to the Node.js settings](https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/#breaking-changes-and-correctness-fixes), which you don't want to miss.
