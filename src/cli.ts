@@ -32,9 +32,9 @@ if (configFiles.length === 0) {
   }
 }
 
-configFiles.forEach(tsConfigFilePath => {
+for (const tsConfigFilePath of configFiles) {
   console.log(`Processing: ${tsConfigFilePath}`);
-  convert(
+  await convert(
     {
       // Limit the scope of source files to those directly listed as opposed to also all
       // of the dependencies that may be imported. Never want to modify dependencies.
@@ -43,4 +43,4 @@ configFiles.forEach(tsConfigFilePath => {
     },
     enableDebug
   );
-});
+}
