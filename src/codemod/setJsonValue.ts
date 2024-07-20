@@ -1,7 +1,12 @@
 import jju from 'jju';
+import {apply_patch} from 'jsonpatch';
 
-export function setJsonValue(json: Record<string, string>, key: string, value: string) {
+export function setJsonValue(json: Record<string, string>, jsonPatchPath: string, value: string) {
   const clone = jju.parse(jju.stringify(json));
-  clone[key] = value;
-  return clone;
+  try {
+    return apply_patch(clone, [{op: 'replace', path: jsonPatchPath, value}]);
+  } catch (error) {
+    // Catch "Replace operation must point to an existing value!"
+    return apply_patch(clone, [{op: 'add', path: jsonPatchPath, value}]);
+  }
 }

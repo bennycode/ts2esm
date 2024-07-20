@@ -27,7 +27,7 @@ export async function convert(tsConfigFilePath: string, debugLogging: boolean = 
 
   // Add "type": "module" to "package.json"
   const packageJsonPath = path.join(projectDirectory, 'package.json');
-  await applyModification(packageJsonPath, 'type', 'module');
+  await applyModification(packageJsonPath, '/type', 'module');
 
   if (paths && debugLogging) {
     console.log('Found path aliases (🧪):', paths);

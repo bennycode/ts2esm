@@ -57,11 +57,11 @@ export async function convertTSConfig(tsConfigFilePath: string, project: Project
 
   if (isWrongModule) {
     const module = await getAnswer('module', 'nodenext', 'esnext');
-    await applyModification(tsConfigFilePath, 'module', module);
+    await applyModification(tsConfigFilePath, '/compilerOptions/module', module);
   }
 
   if (isWrongModuleResolution) {
     const moduleResolution = await getAnswer('moduleResolution', 'nodenext', 'bundler');
-    await applyModification(tsConfigFilePath, 'moduleResolution', moduleResolution);
+    await applyModification(tsConfigFilePath, '/compilerOptions/moduleResolution', moduleResolution);
   }
 }
