@@ -1,7 +1,7 @@
-import JSON5 from 'json5';
+import jju from 'jju';
 
 export function setJsonValue(json: Record<string, string>, key: string, value: string) {
-  const clone = JSON5.parse(JSON5.stringify(json));
+  const clone = jju.parse(jju.stringify(json));
   clone[key] = value;
   return clone;
 }

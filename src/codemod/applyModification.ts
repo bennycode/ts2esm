@@ -1,9 +1,9 @@
-import fs from 'node:fs';
-import {loadJSON} from './loadJSON.js';
-import {getJsonDiff} from './getJsonDiff.js';
 import {confirm} from '@inquirer/prompts';
+import fs from 'node:fs';
+import {getJsonDiff} from './getJsonDiff.js';
+import {loadJSON} from './loadJSON.js';
 import {setJsonValue} from './setJsonValue.js';
-import JSON5 from 'json5';
+import jju from 'jju';
 
 export async function applyModification(jsonPath: string, key: string, value: string) {
   if (fs.existsSync(jsonPath)) {
@@ -15,7 +15,7 @@ export async function applyModification(jsonPath: string, key: string, value: st
       console.log(diff);
       const yes = await confirm({message: 'Shall it be applied?'});
       if (yes) {
-        fs.writeFileSync(jsonPath, JSON5.stringify(modified, {quote: '"', space: 2}));
+        fs.writeFileSync(jsonPath, jju.stringify(modified, {mode: 'json'}));
         return true;
       }
       return false;
