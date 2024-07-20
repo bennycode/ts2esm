@@ -29,4 +29,14 @@ describe('setJsonValue', () => {
     expect(after.key).toBe('value');
     expect(after.type).toBe('module');
   });
+
+  it('adds sub-properties', () => {
+    const before = {
+      key: 'value',
+    };
+    // TODO: Handle a path that doesn't exist yet
+    const after = setJsonValue(before, '/compilerOptions/module', 'nodenext');
+    expect(after.key).toBe('value');
+    expect(after.compilerOptions.module).toBe('nodenext');
+  });
 });

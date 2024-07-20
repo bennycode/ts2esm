@@ -1,7 +1,7 @@
 import path from 'node:path';
 import {Project, StringLiteral, SyntaxKind} from 'ts-morph';
 import {applyModification} from './codemod/applyModification.js';
-import {convertTSConfig} from './codemod/modifyTSConfig.js';
+import {convertTSConfig} from './codemod/convertTSConfig.js';
 import {toImport, toImportAttribute} from './converter/ImportConverter.js';
 import {parseInfo, type ModuleInfo} from './parser/InfoParser.js';
 import {PathFinder} from './util/PathFinder.js';
