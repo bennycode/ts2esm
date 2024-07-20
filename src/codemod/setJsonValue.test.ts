@@ -5,7 +5,7 @@ describe('setJsonValue', () => {
     const before = {
       key: 'value',
     };
-    const after = setJsonValue(before, 'type', 'module');
+    const after = setJsonValue(before, '/type', 'module');
     expect(after.key).toBe('value');
     expect(after.type).toBe('module');
   });
@@ -15,7 +15,7 @@ describe('setJsonValue', () => {
       key: 'value',
       type: 'commonjs',
     };
-    const after = setJsonValue(before, 'type', 'module');
+    const after = setJsonValue(before, '/type', 'module');
     expect(after.key).toBe('value');
     expect(after.type).toBe('module');
   });
@@ -25,7 +25,7 @@ describe('setJsonValue', () => {
       key: 'value',
       type: 'module',
     };
-    const after = setJsonValue(before, 'type', 'module');
+    const after = setJsonValue(before, '/type', 'module');
     expect(after.key).toBe('value');
     expect(after.type).toBe('module');
   });
