@@ -1,6 +1,7 @@
 import path from 'node:path';
-import {Project, StringLiteral, SyntaxKind, type ProjectOptions} from 'ts-morph';
-import {applyModification} from './codemod/package-json-type-module/checkModification.js';
+import {Project, StringLiteral, SyntaxKind} from 'ts-morph';
+import {applyModification} from './codemod/applyModification.js';
+import {convertTSConfig} from './codemod/modifyTSConfig.js';
 import {toImport, toImportAttribute} from './converter/ImportConverter.js';
 import {parseInfo, type ModuleInfo} from './parser/InfoParser.js';
 import {PathFinder} from './util/PathFinder.js';
@@ -9,14 +10,24 @@ import {getNormalizedPath} from './util/PathUtil.js';
 /**
  * Traverses all source code files from a project and checks its import and export declarations.
  */
-export async function convert(options: ProjectOptions, debugLogging: boolean = false) {
-  const project = new Project(options);
+export async function convert(tsConfigFilePath: string, debugLogging: boolean = false) {
+  const project = new Project({
+    // Limit the scope of source files to those directly listed as opposed to also all
+    // of the dependencies that may be imported. Never want to modify dependencies.
+    skipFileDependencyResolution: true,
+
+    tsConfigFilePath,
+  });
   const projectDirectory = project.getRootDirectories()[0]?.getPath() || '';
+  // Note: getCompilerOptions() cannot be cached and has to be used everytime the config is accessed
   const paths = project.getCompilerOptions().paths;
+
+  // Check "module" and "moduleResolution" in "tsconfig.json"
+  await convertTSConfig(tsConfigFilePath, project);
 
   // Add "type": "module" to "package.json"
   const packageJsonPath = path.join(projectDirectory, 'package.json');
-  await applyModification(packageJsonPath);
+  await applyModification(packageJsonPath, 'type', 'module');
 
   if (paths && debugLogging) {
     console.log('Found path aliases (🧪):', paths);

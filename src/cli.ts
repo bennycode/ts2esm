@@ -3,6 +3,7 @@
 import {convert} from './main.js';
 import {input} from '@inquirer/prompts';
 import {ExitPromptError} from '@inquirer/core';
+import path from 'node:path';
 
 const args = process.argv.slice(2);
 const options = args.filter(arg => arg.startsWith('--'));
@@ -33,14 +34,7 @@ if (configFiles.length === 0) {
 }
 
 for (const tsConfigFilePath of configFiles) {
-  console.log(`Processing: ${tsConfigFilePath}`);
-  await convert(
-    {
-      // Limit the scope of source files to those directly listed as opposed to also all
-      // of the dependencies that may be imported. Never want to modify dependencies.
-      skipFileDependencyResolution: true,
-      tsConfigFilePath,
-    },
-    enableDebug
-  );
+  const absolutePath = path.join(process.cwd(), tsConfigFilePath);
+  console.log(`Processing: ${absolutePath}`);
+  await convert(absolutePath, enableDebug);
 }
