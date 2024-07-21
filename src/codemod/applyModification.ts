@@ -13,6 +13,7 @@ export async function applyModification(jsonPath: string, key: string, value: st
     if (diff) {
       console.log(`Your "${jsonPath}" file needs this modification:`);
       console.log(diff);
+      // TODO: Catch Ctrl + C here!
       const yes = await confirm({message: 'Shall it be applied?'});
       if (yes) {
         fs.writeFileSync(jsonPath, jju.stringify(modified, {mode: 'json'}));

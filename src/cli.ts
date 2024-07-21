@@ -21,7 +21,10 @@ const configFiles = args.filter(arg => !arg.startsWith('--'));
 if (configFiles.length === 0) {
   try {
     configFiles.push(
-      await input({default: 'tsconfig.json', message: 'Enter the "relative" file path to your TS config'})
+      await input({
+        default: 'tsconfig.json',
+        message: 'Please enter the path to your TypeScript configuration file (tsconfig.json).',
+      })
     );
   } catch (error: unknown) {
     if (error instanceof ExitPromptError) {
@@ -34,7 +37,9 @@ if (configFiles.length === 0) {
 }
 
 for (const tsConfigFilePath of configFiles) {
-  const absolutePath = path.join(process.cwd(), tsConfigFilePath);
+  const absolutePath = path.isAbsolute(tsConfigFilePath)
+    ? tsConfigFilePath
+    : path.join(process.cwd(), tsConfigFilePath);
   console.log(`Processing: ${absolutePath}`);
   await convert(absolutePath, enableDebug);
 }
