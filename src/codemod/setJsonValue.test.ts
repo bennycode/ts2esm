@@ -41,10 +41,10 @@ describe('setJsonValue', () => {
 
   it('adds new sub-paths if needed', () => {
     const before = {
-      key: 'value',
       compilerOptions: {
         abc: {},
       },
+      key: 'value',
     };
     const after: any = setJsonValue(before, '/compilerOptions/abc/xyz/module', 'nodenext');
     expect(after.key).toBe('value');
@@ -53,10 +53,10 @@ describe('setJsonValue', () => {
 
   it('replaces properties in an added sub-paths', () => {
     const before = {
-      key: 'value',
       compilerOptions: {
         module: 'commonjs',
       },
+      key: 'value',
     };
     const after: any = setJsonValue(before, '/compilerOptions/module', 'nodenext');
     expect(after.key).toBe('value');
