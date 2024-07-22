@@ -29,11 +29,11 @@ function getAnswer<const T extends string>(property: string, noValue: T, yesValu
   return select({
     choices: [
       {
-        name: 'No (common for backend apps that rely on Node.js)',
+        name: 'No, I am NOT using a bundler (common for backend apps that rely on Node.js)',
         value: noValue,
       },
       {
-        name: 'Yes (common for frontend apps that rely on Webpack or Turbopack)',
+        name: 'Yes, I am using a bundler (common for frontend apps that rely on Webpack or Turbopack)',
         value: yesValue,
       },
     ],
