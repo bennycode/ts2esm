@@ -1,8 +1,16 @@
 #!/usr/bin/env node
 
-import {convert} from './main.js';
-import {input} from '@inquirer/prompts';
 import {ExitPromptError} from '@inquirer/core';
+import {input} from '@inquirer/prompts';
+import path from 'node:path';
+import {convert} from './main.js';
+
+process.on('uncaughtException', error => {
+  if (error instanceof ExitPromptError) {
+    // Capturing "Ctrl + C" in "Inquirer" prompts
+    console.log('Goodbye!');
+  }
+});
 
 const args = process.argv.slice(2);
 const options = args.filter(arg => arg.startsWith('--'));
@@ -18,29 +26,18 @@ const enableDebug = options.includes('--debug');
 const configFiles = args.filter(arg => !arg.startsWith('--'));
 
 if (configFiles.length === 0) {
-  try {
-    configFiles.push(
-      await input({default: 'tsconfig.json', message: 'Enter the "relative" file path to your TS config'})
-    );
-  } catch (error: unknown) {
-    if (error instanceof ExitPromptError) {
-      // Capturing "Ctrl + C" in "Inquirer" prompts
-      console.log('Goodbye!');
-    } else {
-      throw error;
-    }
-  }
+  configFiles.push(
+    await input({
+      default: 'tsconfig.json',
+      message: 'Please enter the path to your TypeScript configuration file (tsconfig.json).',
+    })
+  );
 }
 
 for (const tsConfigFilePath of configFiles) {
-  console.log(`Processing: ${tsConfigFilePath}`);
-  await convert(
-    {
-      // Limit the scope of source files to those directly listed as opposed to also all
-      // of the dependencies that may be imported. Never want to modify dependencies.
-      skipFileDependencyResolution: true,
-      tsConfigFilePath,
-    },
-    enableDebug
-  );
+  const absolutePath = path.isAbsolute(tsConfigFilePath)
+    ? tsConfigFilePath
+    : path.join(process.cwd(), tsConfigFilePath);
+  console.log(`Processing: ${absolutePath}`);
+  await convert(absolutePath, enableDebug);
 }

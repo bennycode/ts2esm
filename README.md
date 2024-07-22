@@ -4,13 +4,44 @@ You want to transform your project into an ECMAScript module (ESM)? Look no furt
 
 It also [works with JavaScript](https://github.com/bennycode/ts2esm/issues/20#issuecomment-1894702085) projects since TypeScript is a superset of JavaScript.
 
-## Guide
+## Installation
 
-Convert your CommonJS projects (TypeScript or JavaScript) into ECMAScript modules with these simple steps:
+Simply run this command to install `ts2esm` globally on your machine:
 
-1. Set [module](https://www.typescriptlang.org/tsconfig#module) to `"nodenext"` in your `tsconfig.json`
-2. Set [moduleResolution](https://www.typescriptlang.org/tsconfig#moduleResolution) to `"nodenext"` in your `tsconfig.json`
-3. Run `ts2esm` in the directory of your TypeScript project
+```bash
+npm i -g ts2esm
+```
+
+You can also run it locally (without being globally installed):
+
+```bash
+npx ts2esm
+```
+
+## Usage
+
+Convert your CommonJS projects (TypeScript or JavaScript) into ECMAScript modules with a single command. Just launch the program inside the directory of your project (it will ask you for your `tsconfig.json` path):
+
+```bash
+ts2esm
+```
+
+You can also provide a list of tsconfigs (no prompt):
+
+```bash
+ts2esm packages/foo/tsconfig.json packages/bar/tsconfig.json
+```
+
+Note: The path can be specified absolutely (i.e. `/home/user/cornerstone3D/tsconfig.json`) or relative (i.e. `../../cornerstone3D/tsconfig.json`).
+
+There is also a debug mode with verbose logging:
+
+```bash
+ts2esm --debug
+```
+
+> [!WARNING]  
+> Make sure you have a backup (in Git or similar) of your code as "ts2esm" will modify your source code.
 
 > [!IMPORTANT]  
 > Use TypeScript 5.2 or later as there have been [breaking changes to the Node.js settings](https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/#breaking-changes-and-correctness-fixes), which you don't want to miss.
@@ -89,41 +120,6 @@ After:
 ```ts
 import styles from './MyComponent.module.css' with {type: 'css'};
 ```
-
-## Installation
-
-Simply run this command to install `ts2esm` globally on your machine:
-
-```bash
-npm i -g ts2esm
-```
-
-You can also run it locally (without being globally installed):
-
-```bash
-npx ts2esm
-```
-
-Just launch the program inside the directory of your project (it will ask you for your `tsconfig.json` path):
-
-```bash
-ts2esm
-```
-
-You can also provide a list of tsconfigs (no prompt):
-
-```bash
-ts2esm packages/foo/tsconfig.json packages/bar/tsconfig.json
-```
-
-There is also a debug mode with verbose logging:
-
-```bash
-ts2esm --debug
-```
-
-> [!WARNING]  
-> Make sure you have a backup (in Git or similar) of your code as "ts2esm" will modify your source code.
 
 ## How it works
 
