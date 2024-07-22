@@ -39,7 +39,7 @@ describe('setJsonValue', () => {
     expect(after.compilerOptions.abc.xyz.module).toBe('nodenext');
   });
 
-  it('adds new sub-paths if needed', () => {
+  it('adds subpaths if needed', () => {
     const before = {
       compilerOptions: {
         abc: {},
@@ -51,7 +51,7 @@ describe('setJsonValue', () => {
     expect(after.compilerOptions.abc.xyz.module).toBe('nodenext');
   });
 
-  it('replaces properties in an added sub-paths', () => {
+  it('replaces properties in an added subpath', () => {
     const before = {
       compilerOptions: {
         module: 'commonjs',
