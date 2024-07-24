@@ -49,6 +49,27 @@ ts2esm --debug
 > [!IMPORTANT]  
 > Since TypeScript 5.3 import assertions are [replaced with import attributes](https://devblogs.microsoft.com/typescript/announcing-typescript-5-3-beta/#import-attributes).
 
+## Step-by-Step Guide
+
+This workflow migrates a CommonJS project and checks its types:
+
+```bash
+# Build your project
+npx tsc
+
+# Check your types
+npx @arethetypeswrong/cli --pack .
+
+# Convert to ESM
+npx ts2esm tsconfig.json
+
+# Rebuild your project
+npx tsc
+
+# Check your types again
+npx @arethetypeswrong/cli --pack . --ignore-rules cjs-resolves-to-esm
+```
+
 ## Video Tutorial
 
 Watch this 5-minute video and learn how to migrate from CommonJS to ESM:
