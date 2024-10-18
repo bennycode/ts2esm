@@ -1,8 +1,6 @@
 # ts2esm
 
-You want to transform your project into an ECMAScript module (ESM)? Look no further! This tool (`ts2esm`) converts your TypeScript import and export declarations into ESM-compatible ones. 🪄
-
-It also [works with JavaScript](https://github.com/bennycode/ts2esm/issues/20#issuecomment-1894702085) projects since TypeScript is a superset of JavaScript.
+You want to transform your TypeScript project into an ECMAScript module (ESM)? Look no further! This tool (`ts2esm`) converts your import and export declarations into ESM-compatible ones. It's the ideal tool for converting a CommonJS project to ESM. It also [works with plain JavaScript](https://github.com/bennycode/ts2esm/issues/20#issuecomment-1894702085) projects! 🪄
 
 ## Installation
 
