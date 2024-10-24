@@ -1,5 +1,8 @@
 {
   "extends": "@tstv/eslint-config",
+  "ignorePatterns": [
+    "src/test/fixtures/**"
+  ],
   "rules": {
     "@typescript-eslint/consistent-type-imports": "off"
   }
