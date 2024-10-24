@@ -21,7 +21,7 @@ export async function convert(tsConfigFilePath: string, debugLogging: boolean = 
   await convertTSConfig(tsConfigFilePath, project);
 
   // Add "type": "module" to "package.json"
-  const packageJsonPath = path.join(ProjectUtil.getProjectDirectory(project), 'package.json');
+  const packageJsonPath = path.join(ProjectUtil.getRootDirectory(project), 'package.json');
   await applyModification(packageJsonPath, '/type', 'module');
 
   if (paths && debugLogging) {

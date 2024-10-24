@@ -9,7 +9,11 @@ export const ProjectUtil = {
       tsConfigFilePath,
     });
   },
-  getProjectDirectory: (project: Project): string => {
+  getRootDirectory: (project: Project): string => {
     return project.getRootDirectories()[0]?.getPath() || '';
+  },
+  getPaths: (project: Project) => {
+    // Note: getCompilerOptions() cannot be cached and has to be used everytime the config is accessed
+    return project.getCompilerOptions().paths;
   },
 };

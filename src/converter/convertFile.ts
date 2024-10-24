@@ -1,13 +1,11 @@
 import {Project, SourceFile, SyntaxKind} from 'ts-morph';
 import {rewrite} from '../main.js';
+import {ProjectUtil} from '../util/ProjectUtil.js';
 
 export function convertFile(project: Project, sourceFile: SourceFile, dryRun: boolean) {
-  const projectDirectory = project.getRootDirectories()[0]?.getPath() || '';
-
-  // Note: getCompilerOptions() cannot be cached and has to be used everytime the config is accessed
-  const paths = project.getCompilerOptions().paths;
-
   const filePath = sourceFile.getFilePath();
+  const paths = ProjectUtil.getPaths(project);
+  const projectDirectory = ProjectUtil.getRootDirectory(project);
 
   let madeChanges: boolean = false;
 
