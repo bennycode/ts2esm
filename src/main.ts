@@ -14,8 +14,7 @@ import {ProjectUtil} from './util/ProjectUtil.js';
  */
 export async function convert(tsConfigFilePath: string, debugLogging: boolean = false) {
   const project = ProjectUtil.getProject(tsConfigFilePath);
-  // Note: getCompilerOptions() cannot be cached and has to be used everytime the config is accessed
-  const paths = project.getCompilerOptions().paths;
+  const paths = ProjectUtil.getPaths(project);
 
   // Check "module" and "moduleResolution" in "tsconfig.json"
   await convertTSConfig(tsConfigFilePath, project);
