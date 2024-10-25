@@ -91,6 +91,7 @@ function createReplacementPath({
 
     const foundPath = PathFinder.findPath(baseFilePath, info.extension);
     if (foundPath) {
+      // TODO: Write test case for this condition, mock "path" and "fs" calls if necessary
       if (foundPath.extension === '/index.js' && isNodeModuleRoot(baseFilePath)) {
         // @fixes https://github.com/bennycode/ts2esm/issues/81#issuecomment-2437503011
         return null;
