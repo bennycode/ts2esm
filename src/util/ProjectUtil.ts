@@ -1,3 +1,4 @@
+import path from 'node:path';
 import {Project} from 'ts-morph';
 
 export const ProjectUtil = {
@@ -13,7 +14,7 @@ export const ProjectUtil = {
       tsConfigFilePath,
     });
   },
-  getRootDirectory: (project: Project): string => {
-    return project.getRootDirectories()[0]?.getPath() || '';
+  getRootDirectory: (tsConfigFilePath: string): string => {
+    return path.dirname(tsConfigFilePath);
   },
 };

@@ -1,11 +1,12 @@
-import {Project, SourceFile, SyntaxKind} from 'ts-morph';
-import {rewrite} from '../main.js';
-import {ProjectUtil} from '../util/ProjectUtil.js';
+import { SourceFile, SyntaxKind } from 'ts-morph';
+import { rewrite } from '../main.js';
+import { ProjectUtil } from '../util/ProjectUtil.js';
 
-export function convertFile(project: Project, sourceFile: SourceFile, dryRun: boolean) {
+export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dryRun: boolean) {
   const filePath = sourceFile.getFilePath();
+  const project = ProjectUtil.getProject(tsConfigFilePath);
   const paths = ProjectUtil.getPaths(project);
-  const projectDirectory = ProjectUtil.getRootDirectory(project);
+  const projectDirectory = ProjectUtil.getRootDirectory(tsConfigFilePath);
 
   let madeChanges: boolean = false;
 

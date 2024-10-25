@@ -6,7 +6,7 @@ import {convertFile} from './converter/convertFile.js';
 import {toImport, toImportAttribute} from './converter/ImportConverter.js';
 import {parseInfo, type ModuleInfo} from './parser/InfoParser.js';
 import {PathFinder} from './util/PathFinder.js';
-import {getNormalizedPath} from './util/PathUtil.js';
+import {getNormalizedPath, isNodeModuleRoot} from './util/PathUtil.js';
 import {ProjectUtil} from './util/ProjectUtil.js';
 
 /**
@@ -20,7 +20,7 @@ export async function convert(tsConfigFilePath: string, debugLogging: boolean = 
   await convertTSConfig(tsConfigFilePath, project);
 
   // Add "type": "module" to "package.json"
-  const packageJsonPath = path.join(ProjectUtil.getRootDirectory(project), 'package.json');
+  const packageJsonPath = path.join(ProjectUtil.getRootDirectory(tsConfigFilePath), 'package.json');
   await applyModification(packageJsonPath, '/type', 'module');
 
   if (paths && debugLogging) {
@@ -32,7 +32,7 @@ export async function convert(tsConfigFilePath: string, debugLogging: boolean = 
     if (debugLogging) {
       console.log(` Checking (🧪): ${filePath}`);
     }
-    convertFile(project, sourceFile, false);
+    convertFile(tsConfigFilePath, sourceFile, false);
   });
 }
 
@@ -91,6 +91,10 @@ function createReplacementPath({
 
     const foundPath = PathFinder.findPath(baseFilePath, info.extension);
     if (foundPath) {
+      if (foundPath.extension === '/index.js' && isNodeModuleRoot(baseFilePath)) {
+        // @fixes https://github.com/bennycode/ts2esm/issues/81#issuecomment-2437503011
+        return null;
+      }
       return toImport({...info, extension: foundPath.extension});
     }
   }
