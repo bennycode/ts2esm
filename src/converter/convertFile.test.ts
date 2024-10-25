@@ -2,7 +2,7 @@ import path from 'node:path';
 import {ProjectUtil} from '../util/ProjectUtil.js';
 import {convertFile} from './convertFile.js';
 
-describe.only('convertFile', () => {
+describe('convertFile', () => {
   const fixtures = path.join(process.cwd(), 'src', 'test', 'fixtures');
 
   it('fixes imports from index files', async () => {
