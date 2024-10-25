@@ -28,7 +28,7 @@
     "prettier": "^3.3.3",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
-    "vitest": "^2.0.5"
+    "vitest": "^2.1.3"
   },
   "engines": {
     "node": ">= 10.9"
@@ -74,7 +74,7 @@
     "release:minor": "npm version minor",
     "release:patch": "npm version patch",
     "start": "npm run test:types && node --no-warnings=ExperimentalWarning --loader ts-node/esm ./src/cli.ts",
-    "test": "npm run test:types && npm run test:unit:coverage",
+    "test": "npm run test:types && npm run test:unit",
     "test:types": "tsc --noEmit",
     "test:unit": "vitest run --passWithNoTests",
     "test:unit:coverage": "npm run test:unit -- --coverage.enabled"

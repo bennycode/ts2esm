@@ -1,32 +1,26 @@
 import path from 'node:path';
-import {Project, StringLiteral, SyntaxKind} from 'ts-morph';
+import {StringLiteral} from 'ts-morph';
 import {applyModification} from './codemod/applyModification.js';
 import {convertTSConfig} from './codemod/convertTSConfig.js';
+import {convertFile} from './converter/convertFile.js';
 import {toImport, toImportAttribute} from './converter/ImportConverter.js';
 import {parseInfo, type ModuleInfo} from './parser/InfoParser.js';
 import {PathFinder} from './util/PathFinder.js';
-import {getNormalizedPath} from './util/PathUtil.js';
+import {getNormalizedPath, isNodeModuleRoot} from './util/PathUtil.js';
+import {ProjectUtil} from './util/ProjectUtil.js';
 
 /**
  * Traverses all source code files from a project and checks its import and export declarations.
  */
 export async function convert(tsConfigFilePath: string, debugLogging: boolean = false) {
-  const project = new Project({
-    // Limit the scope of source files to those directly listed as opposed to also all
-    // of the dependencies that may be imported. Never want to modify dependencies.
-    skipFileDependencyResolution: true,
-
-    tsConfigFilePath,
-  });
-  const projectDirectory = project.getRootDirectories()[0]?.getPath() || '';
-  // Note: getCompilerOptions() cannot be cached and has to be used everytime the config is accessed
-  const paths = project.getCompilerOptions().paths;
+  const project = ProjectUtil.getProject(tsConfigFilePath);
+  const paths = ProjectUtil.getPaths(project);
 
   // Check "module" and "moduleResolution" in "tsconfig.json"
   await convertTSConfig(tsConfigFilePath, project);
 
   // Add "type": "module" to "package.json"
-  const packageJsonPath = path.join(projectDirectory, 'package.json');
+  const packageJsonPath = path.join(ProjectUtil.getRootDirectory(tsConfigFilePath), 'package.json');
   await applyModification(packageJsonPath, '/type', 'module');
 
   if (paths && debugLogging) {
@@ -38,45 +32,11 @@ export async function convert(tsConfigFilePath: string, debugLogging: boolean = 
     if (debugLogging) {
       console.log(` Checking (🧪): ${filePath}`);
     }
-
-    let madeChanges: boolean = false;
-
-    sourceFile.getImportDeclarations().forEach(importDeclaration => {
-      importDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
-        const hasAttributesClause = !!importDeclaration.getAttributes();
-        const adjustedImport = rewrite({
-          hasAttributesClause,
-          paths,
-          projectDirectory,
-          sourceFilePath: filePath,
-          stringLiteral,
-        });
-        madeChanges ||= adjustedImport;
-      });
-    });
-
-    sourceFile.getExportDeclarations().forEach(exportDeclaration => {
-      exportDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
-        const hasAttributesClause = !!exportDeclaration.getAttributes();
-        const adjustedExport = rewrite({
-          hasAttributesClause,
-          paths,
-          projectDirectory,
-          sourceFilePath: filePath,
-          stringLiteral,
-        });
-        madeChanges ||= adjustedExport;
-      });
-    });
-
-    if (madeChanges) {
-      sourceFile.saveSync();
-      console.log(`  Modified (🔧): ${filePath}`);
-    }
+    convertFile(tsConfigFilePath, sourceFile, false);
   });
 }
 
-function rewrite({
+export function rewrite({
   hasAttributesClause,
   paths,
   projectDirectory,
@@ -131,6 +91,11 @@ function createReplacementPath({
 
     const foundPath = PathFinder.findPath(baseFilePath, info.extension);
     if (foundPath) {
+      // TODO: Write test case for this condition, mock "path" and "fs" calls if necessary
+      if (foundPath.extension === '/index.js' && isNodeModuleRoot(baseFilePath)) {
+        // @fixes https://github.com/bennycode/ts2esm/issues/81#issuecomment-2437503011
+        return null;
+      }
       return toImport({...info, extension: foundPath.extension});
     }
   }
