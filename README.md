@@ -168,7 +168,7 @@ const __dirname = path.dirname(__filename);
 
 This program was born from an [inspiring conversation](https://twitter.com/bennycode/status/1693362836695585084) I had with [Basarat Ali Syed](https://twitter.com/basarat). I recommend checking out [Basarat's coding tutorials](https://www.youtube.com/@basarat). 👍
 
-## Testimonials
+## Attributions
 
 - ts2esm got highlighted in Deno's article on [How to convert CommonJS to ESM](https://deno.com/blog/convert-cjs-to-esm#tools-for-migrating)
 - ts2esm helped migrating [cornerstonejs/cornerstone3D](https://github.com/cornerstonejs/cornerstone3D) from CommonJS to ESM
