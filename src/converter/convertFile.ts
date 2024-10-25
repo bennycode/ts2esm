@@ -1,6 +1,6 @@
-import { SourceFile, SyntaxKind } from 'ts-morph';
-import { rewrite } from '../main.js';
-import { ProjectUtil } from '../util/ProjectUtil.js';
+import {SourceFile, SyntaxKind} from 'ts-morph';
+import {rewrite} from '../main.js';
+import {ProjectUtil} from '../util/ProjectUtil.js';
 
 export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dryRun: boolean) {
   const filePath = sourceFile.getFilePath();
