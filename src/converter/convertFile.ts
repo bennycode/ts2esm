@@ -1,6 +1,7 @@
 import {SourceFile, SyntaxKind} from 'ts-morph';
 import {rewrite} from '../main.js';
 import {ProjectUtil} from '../util/ProjectUtil.js';
+import {replaceRequire} from './replaceRequire.js';
 
 export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dryRun: boolean) {
   const filePath = sourceFile.getFilePath();
@@ -12,39 +13,7 @@ export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dr
 
   // Update "require" to "import"
   sourceFile.getVariableStatements().forEach(statement => {
-    // Check if the initializer is a require call
-    const declaration = statement.getDeclarations()[0];
-    if (!declaration) {
-      return;
-    }
-
-    // @see https://github.com/dsherret/ts-morph/issues/682#issuecomment-520246214
-    const initializer = declaration.getInitializerIfKind(SyntaxKind.CallExpression);
-    if (!initializer) {
-      return;
-    }
-
-    // Extract the argument passed to "require()" and use its value
-    const args = initializer.getArguments();
-    const moduleSpecifierNode = args[0];
-    if (!moduleSpecifierNode) {
-      return;
-    }
-
-    // Narrowing the Node and accessing its literal value
-    const moduleName = moduleSpecifierNode.asKind(SyntaxKind.StringLiteral)?.getLiteralValue();
-    if (!moduleName) {
-      return;
-    }
-
-    // Add import declaration
-    sourceFile.addImportDeclaration({
-      defaultImport: declaration.getName(),
-      moduleSpecifier: moduleName,
-    });
-
-    // Remove the original require statement
-    statement.remove();
+    madeChanges ||= replaceRequire(sourceFile, statement);
   });
 
   // Add explicit file extensions to imports
