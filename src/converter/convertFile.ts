@@ -10,6 +10,44 @@ export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dr
 
   let madeChanges: boolean = false;
 
+  // Update "require" to "import"
+  sourceFile.getVariableStatements().forEach(statement => {
+    // Check if the initializer is a require call
+    const declaration = statement.getDeclarations()[0];
+    if (!declaration) {
+      return;
+    }
+
+    // @see https://github.com/dsherret/ts-morph/issues/682#issuecomment-520246214
+    const initializer = declaration.getInitializerIfKind(SyntaxKind.CallExpression);
+    if (!initializer) {
+      return;
+    }
+
+    // Extract the argument passed to "require()" and use its value
+    const args = initializer.getArguments();
+    const moduleSpecifierNode = args[0];
+    if (!moduleSpecifierNode) {
+      return;
+    }
+
+    // Narrowing the Node and accessing its literal value
+    const moduleName = moduleSpecifierNode.asKind(SyntaxKind.StringLiteral)?.getLiteralValue();
+    if (!moduleName) {
+      return;
+    }
+
+    // Add import declaration
+    sourceFile.addImportDeclaration({
+      defaultImport: declaration.getName(),
+      moduleSpecifier: moduleName,
+    });
+
+    // Remove the original require statement
+    statement.remove();
+  });
+
+  // Add explicit file extensions to imports
   sourceFile.getImportDeclarations().forEach(importDeclaration => {
     importDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
       const hasAttributesClause = !!importDeclaration.getAttributes();
@@ -24,6 +62,7 @@ export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dr
     });
   });
 
+  // Add explicit file extensions to exports
   sourceFile.getExportDeclarations().forEach(exportDeclaration => {
     exportDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
       const hasAttributesClause = !!exportDeclaration.getAttributes();
