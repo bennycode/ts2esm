@@ -80,6 +80,8 @@ Here you can see the transformations that `ts2esm` applies.
 
 ### Require Statements
 
+Before:
+
 ```ts
 const fs = require('node:fs');
 const path = require('path');
