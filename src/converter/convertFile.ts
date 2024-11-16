@@ -14,7 +14,9 @@ export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dr
   // Update "require" variable assignments to "import" declarations
   sourceFile.getVariableStatements().forEach(statement => {
     const updatedRequire = replaceRequire(sourceFile, statement);
-    madeChanges ||= updatedRequire;
+    if (updatedRequire) {
+      madeChanges = true;
+    }
   });
 
   // Add explicit file extensions to imports
@@ -28,7 +30,9 @@ export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dr
         sourceFilePath: sourceFile.getFilePath(),
         stringLiteral,
       });
-      madeChanges ||= adjustedImport;
+      if (adjustedImport) {
+        madeChanges = true;
+      }
     });
   });
 
@@ -43,7 +47,9 @@ export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dr
         sourceFilePath: filePath,
         stringLiteral,
       });
-      madeChanges ||= adjustedExport;
+      if (adjustedExport) {
+        madeChanges = true;
+      }
     });
   });
 
