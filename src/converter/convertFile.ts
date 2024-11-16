@@ -11,9 +11,10 @@ export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dr
 
   let madeChanges: boolean = false;
 
-  // Update "require" to "import"
+  // Update "require" variable assignments to "import" declarations
   sourceFile.getVariableStatements().forEach(statement => {
-    madeChanges ||= replaceRequire(sourceFile, statement);
+    const updatedRequire = replaceRequire(sourceFile, statement);
+    madeChanges ||= updatedRequire;
   });
 
   // Add explicit file extensions to imports
