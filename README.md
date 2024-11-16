@@ -78,6 +78,22 @@ Watch this 5-minute video and learn how to migrate from CommonJS to ESM:
 
 Here you can see the transformations that `ts2esm` applies.
 
+### Require Statements
+
+Before:
+
+```ts
+const fs = require('node:fs');
+const path = require('path');
+```
+
+After:
+
+```ts
+import fs from 'node:fs';
+import path from 'path';
+```
+
 ### Import Declarations
 
 Before:

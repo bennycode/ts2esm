@@ -1,6 +1,7 @@
 import {SourceFile, SyntaxKind} from 'ts-morph';
 import {rewrite} from '../main.js';
 import {ProjectUtil} from '../util/ProjectUtil.js';
+import {replaceRequire} from './replaceRequire.js';
 
 export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dryRun: boolean) {
   const filePath = sourceFile.getFilePath();
@@ -10,6 +11,15 @@ export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dr
 
   let madeChanges: boolean = false;
 
+  // Update "require" variable assignments to "import" declarations
+  sourceFile.getVariableStatements().forEach(statement => {
+    const updatedRequire = replaceRequire(sourceFile, statement);
+    if (updatedRequire) {
+      madeChanges = true;
+    }
+  });
+
+  // Add explicit file extensions to imports
   sourceFile.getImportDeclarations().forEach(importDeclaration => {
     importDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
       const hasAttributesClause = !!importDeclaration.getAttributes();
@@ -20,10 +30,13 @@ export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dr
         sourceFilePath: sourceFile.getFilePath(),
         stringLiteral,
       });
-      madeChanges ||= adjustedImport;
+      if (adjustedImport) {
+        madeChanges = true;
+      }
     });
   });
 
+  // Add explicit file extensions to exports
   sourceFile.getExportDeclarations().forEach(exportDeclaration => {
     exportDeclaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
       const hasAttributesClause = !!exportDeclaration.getAttributes();
@@ -34,7 +47,9 @@ export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dr
         sourceFilePath: filePath,
         stringLiteral,
       });
-      madeChanges ||= adjustedExport;
+      if (adjustedExport) {
+        madeChanges = true;
+      }
     });
   });
 
