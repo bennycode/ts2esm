@@ -25,17 +25,23 @@ export async function convertProject(tsConfigFilePath: string, debugLogging: boo
     console.log('Found path aliases (🪢):', paths);
   }
 
+  console.log(`Found "${project.getSourceFiles().length}" source code files.`);
+
   project.getSourceFiles().forEach(sourceFile => {
     const filePath = sourceFile.getFilePath();
     checkedFiles += 1;
     if (debugLogging) {
       console.log(` Checking (🧪): ${filePath}`);
     }
-    const modifiedFile = convertFile(sourceFile);
-    if (modifiedFile) {
-      modifiedFiles += 1;
-      modifiedFile.saveSync();
-      console.log(`  Modified (🔧): ${filePath}`);
+    try {
+      const modifiedFile = convertFile(sourceFile);
+      if (modifiedFile) {
+        modifiedFiles += 1;
+        modifiedFile.saveSync();
+        console.log(`  Modified (🔧): ${filePath}`);
+      }
+    } catch (error: unknown) {
+      console.error(` There was an issue with "${filePath}":`, error);
     }
   });
 
