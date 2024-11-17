@@ -61,7 +61,7 @@
     "clean": "rimraf .nyc_output coverage dist",
     "deploy": "exit 0",
     "dev": "npm run test:types && node --no-warnings=ExperimentalWarning --inspect --loader ts-node/esm ./src/cli.ts",
-    "dev:test1": "npm run dev -- ../../temp/cornerstone3D/tsconfig.json",
+    "dev:test1": "npm run dev -- ../../temp/cornerstone3D/tsconfig.json --debug",
     "dev:test2": "npm run dev -- ../../southpolecarbon/emission-factors-etl/tsconfig.json --debug",
     "dist": "npm run clean && npm run build",
     "docs": "exit 0",
