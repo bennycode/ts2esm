@@ -4,7 +4,7 @@ import {ProjectUtil} from '../util/ProjectUtil.js';
 import {replaceRequire} from './replaceRequire.js';
 
 /**
- * Returns the source file if it was modified; otherwise, returns undefined.
+ * Returns the source file ONLY if it was modified.
  */
 export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile) {
   const filePath = sourceFile.getFilePath();
@@ -56,10 +56,5 @@ export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile) {
     });
   });
 
-  if (madeChanges) {
-  
-    return sourceFile;
-  }
-
-  return undefined;
+  return madeChanges ? sourceFile : null;
 }
