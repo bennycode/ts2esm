@@ -22,12 +22,9 @@ export function replaceModuleExports(sourceFile: SourceFile) {
         const right = binaryExpression.getRight().getText();
 
         if (left === 'module.exports') {
-          // Handle `module.exports = ...` (default export)
           defaultExport = right;
           statement.remove();
         } else if (left.startsWith('module.exports.')) {
-          // Handle `module.exports.<name> = ...` (named exports)
-          // Get the property name after `module.exports.`
           const exportName = left.split('.')[2];
           if (exportName) {
             namedExports.push(exportName);
@@ -38,7 +35,6 @@ export function replaceModuleExports(sourceFile: SourceFile) {
     }
   });
 
-  // Add default export
   if (defaultExport) {
     sourceFile.addExportAssignment({
       expression: defaultExport,
@@ -46,7 +42,6 @@ export function replaceModuleExports(sourceFile: SourceFile) {
     });
   }
 
-  // Add named export
   namedExports.forEach(name => {
     sourceFile.addExportDeclaration({
       namedExports: [name],

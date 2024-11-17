@@ -1,53 +1,40 @@
-import path from 'node:path';
+import {SourceFile, SyntaxKind} from 'ts-morph';
+import {ProjectUtil} from '../../util/ProjectUtil.js';
 import {StringLiteral} from 'ts-morph';
-import {applyModification} from './codemod/applyModification.js';
-import {convertTSConfig} from './codemod/convertTSConfig.js';
-import {convertFile} from './converter/convertFile.js';
-import {toImport, toImportAttribute} from './converter/ImportConverter.js';
-import {parseInfo, type ModuleInfo} from './parser/InfoParser.js';
-import {PathFinder} from './util/PathFinder.js';
-import {getNormalizedPath, isNodeModuleRoot} from './util/PathUtil.js';
-import {ProjectUtil} from './util/ProjectUtil.js';
+import {ModuleInfo, parseInfo} from '../../parser/InfoParser.js';
+import {toImport, toImportAttribute} from '../ImportConverter.js';
+import path from 'node:path';
+import {PathFinder} from '../../util/PathFinder.js';
+import {getNormalizedPath, isNodeModuleRoot} from '../../util/PathUtil.js';
 
-/**
- * Traverses all source code files from a project and checks its import and export declarations.
- */
-export async function convert(tsConfigFilePath: string, debugLogging: boolean = false) {
-  let checkedFiles = 0;
-  let modifiedFiles = 0;
+export function replaceFileExtensions(sourceFile: SourceFile, type: 'import' | 'export') {
+  let madeChanges: boolean = false;
 
-  const project = ProjectUtil.getProject(tsConfigFilePath);
-  const paths = ProjectUtil.getPaths(project);
+  const paths = ProjectUtil.getPaths(sourceFile.getProject());
+  const tsConfigFilePath = ProjectUtil.getTsConfigFilePath(sourceFile);
+  const projectDirectory = ProjectUtil.getRootDirectory(tsConfigFilePath);
+  const identifier = type === 'import' ? 'getImportDeclarations' : 'getExportDeclarations';
 
-  // Check "module" and "moduleResolution" in "tsconfig.json"
-  await convertTSConfig(tsConfigFilePath, project);
-
-  // Add "type": "module" to "package.json"
-  const packageJsonPath = path.join(ProjectUtil.getRootDirectory(tsConfigFilePath), 'package.json');
-  await applyModification(packageJsonPath, '/type', 'module');
-
-  if (paths && debugLogging) {
-    console.log('Found path aliases (🧪):', paths);
-  }
-
-  project.getSourceFiles().forEach(sourceFile => {
-    const filePath = sourceFile.getFilePath();
-    checkedFiles += 1;
-    if (debugLogging) {
-      console.log(` Checking (🧪): ${filePath}`);
-    }
-    const modifiedFile = convertFile(tsConfigFilePath, sourceFile);
-    if (modifiedFile) {
-      modifiedFiles += 1;
-      modifiedFile.saveSync();
-      console.log(`  Modified (🔧): ${filePath}`);
-    }
+  sourceFile[identifier]().forEach(declaration => {
+    declaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
+      const hasAttributesClause = !!declaration.getAttributes();
+      const adjustedImport = replaceModulePath({
+        hasAttributesClause,
+        paths,
+        projectDirectory,
+        sourceFilePath: sourceFile.getFilePath(),
+        stringLiteral,
+      });
+      if (adjustedImport) {
+        madeChanges = true;
+      }
+    });
   });
 
-  console.log(` Checked "${checkedFiles}" files / Modified "${modifiedFiles}" files ✨`);
+  return madeChanges;
 }
 
-export function rewrite({
+function replaceModulePath({
   hasAttributesClause,
   paths,
   projectDirectory,

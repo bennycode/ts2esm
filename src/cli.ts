@@ -3,7 +3,7 @@
 import {ExitPromptError} from '@inquirer/core';
 import {input} from '@inquirer/prompts';
 import path from 'node:path';
-import {convert} from './main.js';
+import {convertProject} from './converter/convertProject.js';
 
 process.on('uncaughtException', error => {
   if (error instanceof ExitPromptError) {
@@ -39,5 +39,5 @@ for (const tsConfigFilePath of configFiles) {
     ? tsConfigFilePath
     : path.join(process.cwd(), tsConfigFilePath);
   console.log(`Processing: ${absolutePath}`);
-  await convert(absolutePath, enableDebug);
+  await convertProject(absolutePath, enableDebug);
 }
