@@ -131,7 +131,7 @@ describe('ImportConverter', () => {
     });
 
     it('does not add a slash after another slash', () => {
-      expect(toImport({declaration: "'./io/'", quoteSymbol: "'", extension: '/index.js'})).toBe(`'./io/index.js'`);
+      expect(toImport({declaration: "'./io/'", extension: '/index.js', quoteSymbol: "'"})).toBe(`'./io/index.js'`);
     });
   });
 });
