@@ -18,6 +18,6 @@ export const ProjectUtil = {
     return path.dirname(tsConfigFilePath);
   },
   getTsConfigFilePath: (sourceFile: SourceFile): string => {
-    return sourceFile.getProject().compilerOptions['_settings'].configFilePath as string;
+    return sourceFile.getProject().compilerOptions['_settings'].configFilePath + '';
   },
 };
