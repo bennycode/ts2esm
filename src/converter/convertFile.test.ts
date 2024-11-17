@@ -12,9 +12,9 @@ describe('convertFile', () => {
     const project = ProjectUtil.getProject(projectConfig);
 
     const sourceFile = project.getSourceFile('main.ts')!;
-    const modifiedFile = convertFile(projectConfig, sourceFile, true);
+    const modifiedFile = convertFile(projectConfig, sourceFile);
 
-    await expect(modifiedFile.getText()).toMatchFileSnapshot(snapshot);
+    await expect(modifiedFile?.getText()).toMatchFileSnapshot(snapshot);
   });
 
   it('fixes imports when tsconfig has an "include" property', async () => {
@@ -24,9 +24,9 @@ describe('convertFile', () => {
     const project = ProjectUtil.getProject(projectConfig);
 
     const sourceFile = project.getSourceFile('consumer.ts')!;
-    const modifiedFile = convertFile(projectConfig, sourceFile, true);
+    const modifiedFile = convertFile(projectConfig, sourceFile);
 
-    await expect(modifiedFile.getText()).toMatchFileSnapshot(snapshot);
+    await expect(modifiedFile?.getText()).toMatchFileSnapshot(snapshot);
   });
 
   it('turns CJS require statements into ESM imports', async () => {
@@ -36,9 +36,9 @@ describe('convertFile', () => {
     const project = ProjectUtil.getProject(projectConfig);
 
     const sourceFile = project.getSourceFile('main.ts')!;
-    const modifiedFile = convertFile(projectConfig, sourceFile, true);
+    const modifiedFile = convertFile(projectConfig, sourceFile);
 
-    await expect(modifiedFile.getText()).toMatchFileSnapshot(snapshot);
+    await expect(modifiedFile?.getText()).toMatchFileSnapshot(snapshot);
   });
 
   it('handles index files referenced with a trailing slash', async () => {
@@ -48,8 +48,8 @@ describe('convertFile', () => {
     const project = ProjectUtil.getProject(projectConfig);
 
     const sourceFile = project.getSourceFile('main.ts')!;
-    const modifiedFile = convertFile(projectConfig, sourceFile, true);
+    const modifiedFile = convertFile(projectConfig, sourceFile);
 
-    await expect(modifiedFile.getText()).toMatchFileSnapshot(snapshot);
+    await expect(modifiedFile?.getText()).toMatchFileSnapshot(snapshot);
   });
 });

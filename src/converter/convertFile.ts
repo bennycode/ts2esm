@@ -3,7 +3,10 @@ import {rewrite} from '../main.js';
 import {ProjectUtil} from '../util/ProjectUtil.js';
 import {replaceRequire} from './replaceRequire.js';
 
-export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dryRun: boolean) {
+/**
+ * Returns the source file if it was modified; otherwise, returns undefined.
+ */
+export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile) {
   const filePath = sourceFile.getFilePath();
   const project = ProjectUtil.getProject(tsConfigFilePath);
   const paths = ProjectUtil.getPaths(project);
@@ -54,11 +57,9 @@ export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile, dr
   });
 
   if (madeChanges) {
-    if (!dryRun) {
-      sourceFile.saveSync();
-      console.log(`  Modified (🔧): ${filePath}`);
-    }
+  
+    return sourceFile;
   }
 
-  return sourceFile;
+  return undefined;
 }
