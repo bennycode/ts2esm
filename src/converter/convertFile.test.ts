@@ -40,4 +40,16 @@ describe('convertFile', () => {
 
     await expect(modifiedFile.getText()).toMatchFileSnapshot(snapshot);
   });
+
+  it('handles index files referenced with a trailing slash', async () => {
+    const projectDir = path.join(fixtures, 'trailing-slash');
+    const projectConfig = path.join(projectDir, 'tsconfig.json');
+    const snapshot = path.join(projectDir, 'src', 'main.snap.ts');
+    const project = ProjectUtil.getProject(projectConfig);
+
+    const sourceFile = project.getSourceFile('main.ts')!;
+    const modifiedFile = convertFile(projectConfig, sourceFile, true);
+
+    await expect(modifiedFile.getText()).toMatchFileSnapshot(snapshot);
+  });
 });
