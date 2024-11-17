@@ -43,3 +43,16 @@ export function replaceRequire(sourceFile: SourceFile, statement: VariableStatem
   statement.remove();
   return true;
 }
+
+export function replaceRequires(sourceFile: SourceFile) {
+  let madeChanges: boolean = false;
+
+  sourceFile.getVariableStatements().forEach(statement => {
+    const updatedRequire = replaceRequire(sourceFile, statement);
+    if (updatedRequire) {
+      madeChanges = true;
+    }
+  });
+
+  return madeChanges;
+}

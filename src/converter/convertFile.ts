@@ -1,7 +1,8 @@
 import {SourceFile, SyntaxKind} from 'ts-morph';
 import {rewrite} from '../main.js';
 import {ProjectUtil} from '../util/ProjectUtil.js';
-import {replaceRequire} from './replaceRequire.js';
+import {replaceModuleExports} from './replaceModuleExports.js';
+import {replaceRequires} from './replaceRequire.js';
 
 /**
  * Returns the source file ONLY if it was modified.
@@ -14,13 +15,17 @@ export function convertFile(tsConfigFilePath: string, sourceFile: SourceFile) {
 
   let madeChanges: boolean = false;
 
-  // Update "require" variable assignments to "import" declarations
-  sourceFile.getVariableStatements().forEach(statement => {
-    const updatedRequire = replaceRequire(sourceFile, statement);
-    if (updatedRequire) {
-      madeChanges = true;
-    }
-  });
+  // Update "require" statements to "import" statements
+  const updatedRequires = replaceRequires(sourceFile);
+  if (updatedRequires) {
+    madeChanges = true;
+  }
+
+  // Update "module.exports" statements to "export" statements
+  const replacedModuleExports = replaceModuleExports(sourceFile);
+  if (replacedModuleExports) {
+    madeChanges = true;
+  }
 
   // Add explicit file extensions to imports
   sourceFile.getImportDeclarations().forEach(importDeclaration => {

@@ -94,6 +94,28 @@ import fs from 'node:fs';
 import path from 'path';
 ```
 
+### Module Exports
+
+Before:
+
+```ts
+const Benny = 1;
+const Code = 2;
+
+module.exports = Benny;
+module.exports.Code = Code;
+```
+
+After:
+
+```ts
+const Benny = 1;
+const Code = 2;
+
+export default Benny;
+export {Code};
+```
+
 ### Import Declarations
 
 Before:
