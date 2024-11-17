@@ -21,8 +21,8 @@ export async function convertProject(tsConfigFilePath: string, debugLogging: boo
   const packageJsonPath = path.join(ProjectUtil.getRootDirectory(tsConfigFilePath), 'package.json');
   await applyModification(packageJsonPath, '/type', 'module');
 
-  if (paths && debugLogging) {
-    console.log('Found path aliases (🧪):', paths);
+  if (paths) {
+    console.log('Found path aliases (🪢):', paths);
   }
 
   project.getSourceFiles().forEach(sourceFile => {
