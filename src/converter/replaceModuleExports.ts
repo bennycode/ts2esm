@@ -54,5 +54,5 @@ export function replaceModuleExports(sourceFile: SourceFile) {
   });
 
   const madeChanges = namedExports.length || defaultExport;
-  return madeChanges ? true : false;
+  return !!madeChanges;
 }
