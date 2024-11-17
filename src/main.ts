@@ -13,6 +13,9 @@ import {ProjectUtil} from './util/ProjectUtil.js';
  * Traverses all source code files from a project and checks its import and export declarations.
  */
 export async function convert(tsConfigFilePath: string, debugLogging: boolean = false) {
+  let checkedFiles = 0;
+  let modifiedFiles = 0;
+
   const project = ProjectUtil.getProject(tsConfigFilePath);
   const paths = ProjectUtil.getPaths(project);
 
@@ -29,11 +32,19 @@ export async function convert(tsConfigFilePath: string, debugLogging: boolean = 
 
   project.getSourceFiles().forEach(sourceFile => {
     const filePath = sourceFile.getFilePath();
+    checkedFiles += 1;
     if (debugLogging) {
       console.log(` Checking (🧪): ${filePath}`);
     }
-    convertFile(tsConfigFilePath, sourceFile, false);
+    const modifiedFile = convertFile(tsConfigFilePath, sourceFile);
+    if (modifiedFile) {
+      modifiedFiles += 1;
+      modifiedFile.saveSync();
+      console.log(`  Modified (🔧): ${filePath}`);
+    }
   });
+
+  console.log(` Checked "${checkedFiles}" files / Modified "${modifiedFiles}" files ✨`);
 }
 
 export function rewrite({

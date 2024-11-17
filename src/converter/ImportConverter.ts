@@ -15,5 +15,5 @@ export function toImport({
   quoteSymbol,
   extension,
 }: Pick<ModuleInfo, 'declaration' | 'quoteSymbol' | 'extension'>) {
-  return `${declaration.replace(new RegExp(`${quoteSymbol}$`), `${extension}${quoteSymbol}`)}`;
+  return `${declaration.replace(new RegExp(`${quoteSymbol}$`), `${extension}${quoteSymbol}`)}`.replace(/\/\//g, '/');
 }

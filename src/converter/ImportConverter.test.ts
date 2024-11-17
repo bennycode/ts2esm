@@ -129,5 +129,9 @@ describe('ImportConverter', () => {
         })
       ).toBe(`'./add.mjs'`);
     });
+
+    it('does not add a slash after another slash', () => {
+      expect(toImport({declaration: "'./io/'", extension: '/index.js', quoteSymbol: "'"})).toBe(`'./io/index.js'`);
+    });
   });
 });
