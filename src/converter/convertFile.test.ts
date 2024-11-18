@@ -54,7 +54,7 @@ describe('convertFile', () => {
       await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
     });
 
-    it.only('handles files with a Node.js shebang at the beginning', async () => {
+    it('handles files with a Node.js shebang at the beginning', async () => {
       const projectDir = path.join(fixtures, 'cjs-shebang');
       const projectConfig = path.join(projectDir, 'tsconfig.json');
       const snapshot = path.join(projectDir, 'src', 'main.snap.ts');

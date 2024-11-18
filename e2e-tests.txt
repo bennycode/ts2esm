@@ -1,2 +1,0 @@
-- https://github.com/cornerstonejs/cornerstone3D #d70e58f4be761fe9d35ece1956bec78073a80e45 ts2esm@2.0.1
-- https://github.com/southpolecarbon/emission-factors-etl #d98c141653ab253e2e4a837c8e1af2c2d879fc84
