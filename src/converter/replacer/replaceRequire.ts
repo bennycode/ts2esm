@@ -1,6 +1,6 @@
 import {SourceFile, SyntaxKind, VariableStatement} from 'ts-morph';
 
-export function replaceRequire(sourceFile: SourceFile, statement: VariableStatement) {
+function replaceRequire(sourceFile: SourceFile, statement: VariableStatement) {
   // Get variable declaration
   const declaration = statement.getDeclarations()[0];
   if (!declaration) {
@@ -48,9 +48,13 @@ export function replaceRequires(sourceFile: SourceFile) {
   let madeChanges: boolean = false;
 
   sourceFile.getVariableStatements().forEach(statement => {
-    const updatedRequire = replaceRequire(sourceFile, statement);
-    if (updatedRequire) {
-      madeChanges = true;
+    try {
+      const updatedRequire = replaceRequire(sourceFile, statement);
+      if (updatedRequire) {
+        madeChanges = true;
+      }
+    } catch (error: unknown) {
+      console.error(` There was an issue with "${sourceFile.getFilePath()}":`, error);
     }
   });
 

@@ -53,6 +53,18 @@ describe('convertFile', () => {
 
       await expect(modifiedFile?.getText()).toMatchFileSnapshot(snapshot);
     });
+
+    it.only('handles files with a Node.js shebang at the beginning', async () => {
+      const projectDir = path.join(fixtures, 'cjs-shebang');
+      const projectConfig = path.join(projectDir, 'tsconfig.json');
+      const snapshot = path.join(projectDir, 'src', 'main.snap.ts');
+      const project = ProjectUtil.getProject(projectConfig);
+
+      const sourceFile = project.getSourceFile('main.ts')!;
+      const modifiedFile = convertFile(sourceFile);
+
+      await expect(modifiedFile?.getText()).toMatchFileSnapshot(snapshot);
+    });
   });
 
   describe('exports', () => {

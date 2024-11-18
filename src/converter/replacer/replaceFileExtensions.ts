@@ -16,19 +16,23 @@ export function replaceFileExtensions(sourceFile: SourceFile, type: 'import' | '
   const identifier = type === 'import' ? 'getImportDeclarations' : 'getExportDeclarations';
 
   sourceFile[identifier]().forEach(declaration => {
-    declaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
-      const hasAttributesClause = !!declaration.getAttributes();
-      const adjustedImport = replaceModulePath({
-        hasAttributesClause,
-        paths,
-        projectDirectory,
-        sourceFilePath: sourceFile.getFilePath(),
-        stringLiteral,
+    try {
+      declaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
+        const hasAttributesClause = !!declaration.getAttributes();
+        const adjustedImport = replaceModulePath({
+          hasAttributesClause,
+          paths,
+          projectDirectory,
+          sourceFilePath: sourceFile.getFilePath(),
+          stringLiteral,
+        });
+        if (adjustedImport) {
+          madeChanges = true;
+        }
       });
-      if (adjustedImport) {
-        madeChanges = true;
-      }
-    });
+    } catch (error: unknown) {
+      console.error(` There was an issue with "${sourceFile.getFilePath()}":`, error);
+    }
   });
 
   return madeChanges;
