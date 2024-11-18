@@ -7,7 +7,6 @@ export function replaceModuleExports(sourceFile: SourceFile) {
   // Iterate through all statements in the source file
   sourceFile.getStatements().forEach(statement => {
     try {
-      // Check if the statement is an ExpressionStatement
       if (statement.getKind() === SyntaxKind.ExpressionStatement) {
         const expressionStatement = statement.asKind(SyntaxKind.ExpressionStatement);
         if (!expressionStatement) {
