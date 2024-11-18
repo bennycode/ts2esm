@@ -1,7 +1,14 @@
 import {SourceFile, SyntaxKind, VariableStatement} from 'ts-morph';
 
-export function replaceRequire(sourceFile: SourceFile, statement: VariableStatement) {
-  // Get variable declaration
+/**
+ * Replaces a CommonJS require statement with an ESM import declaration.
+ *
+ * @param sourceFile - The source file being transformed.
+ * @param statement - The candidate containing the require statement.
+ * @returns true if the replacement was successful, false otherwise.
+ */
+function replaceRequire(sourceFile: SourceFile, statement: VariableStatement) {
+  // Get the variable declaration
   const declaration = statement.getDeclarations()[0];
   if (!declaration) {
     return false;
@@ -47,12 +54,38 @@ export function replaceRequire(sourceFile: SourceFile, statement: VariableStatem
 export function replaceRequires(sourceFile: SourceFile) {
   let madeChanges: boolean = false;
 
+  // Handle files with "#! /usr/bin/env node" pragma
+  const firstStatement = sourceFile.getStatements()[0];
+  const hasShebang = firstStatement && firstStatement?.getFullText().startsWith('#!');
+  let shebangText = '';
+  if (hasShebang) {
+    // The full text contains both comments and the following statment,
+    // so we are separating the statement into comments and the instruction that follow on the next line.
+    const statementWithComment = firstStatement.getFullText();
+    const pureStatement = firstStatement.getText();
+    shebangText = statementWithComment.replace(pureStatement, '');
+    const lineAfterShebang = statementWithComment.replace(shebangText, '');
+    // We remove the node containing the shebang comment (and the following statement) to insert only the pure statement.
+    const index = firstStatement.getChildIndex();
+    firstStatement.remove();
+    sourceFile.insertStatements(index, lineAfterShebang);
+  }
+
   sourceFile.getVariableStatements().forEach(statement => {
-    const updatedRequire = replaceRequire(sourceFile, statement);
-    if (updatedRequire) {
-      madeChanges = true;
+    try {
+      const updatedRequire = replaceRequire(sourceFile, statement);
+      if (updatedRequire) {
+        madeChanges = true;
+      }
+    } catch (error: unknown) {
+      console.error(` There was an issue with "${sourceFile.getFilePath()}":`, error);
     }
   });
+
+  if (shebangText) {
+    // We reinsert the Shebang at the top of the file to avoid error TS18026.
+    sourceFile.insertStatements(0, shebangText);
+  }
 
   return madeChanges;
 }
