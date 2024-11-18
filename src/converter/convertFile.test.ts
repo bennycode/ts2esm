@@ -15,7 +15,7 @@ describe('convertFile', () => {
       const sourceFile = project.getSourceFile('main.ts')!;
       const modifiedFile = convertFile(sourceFile);
 
-      await expect(modifiedFile?.getText()).toMatchFileSnapshot(snapshot);
+      await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
     });
 
     it('fixes imports when tsconfig has an "include" property', async () => {
@@ -27,7 +27,7 @@ describe('convertFile', () => {
       const sourceFile = project.getSourceFile('consumer.ts')!;
       const modifiedFile = convertFile(sourceFile);
 
-      await expect(modifiedFile?.getText()).toMatchFileSnapshot(snapshot);
+      await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
     });
 
     it('turns CJS require statements into ESM imports', async () => {
@@ -39,7 +39,7 @@ describe('convertFile', () => {
       const sourceFile = project.getSourceFile('main.ts')!;
       const modifiedFile = convertFile(sourceFile);
 
-      await expect(modifiedFile?.getText()).toMatchFileSnapshot(snapshot);
+      await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
     });
 
     it('handles index files referenced with a trailing slash', async () => {
@@ -51,7 +51,7 @@ describe('convertFile', () => {
       const sourceFile = project.getSourceFile('main.ts')!;
       const modifiedFile = convertFile(sourceFile);
 
-      await expect(modifiedFile?.getText()).toMatchFileSnapshot(snapshot);
+      await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
     });
 
     it.only('handles files with a Node.js shebang at the beginning', async () => {
@@ -63,7 +63,7 @@ describe('convertFile', () => {
       const sourceFile = project.getSourceFile('main.ts')!;
       const modifiedFile = convertFile(sourceFile);
 
-      await expect(modifiedFile?.getText()).toMatchFileSnapshot(snapshot);
+      await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
     });
   });
 
@@ -77,7 +77,7 @@ describe('convertFile', () => {
       const sourceFile = project.getSourceFile('main.ts')!;
       const modifiedFile = convertFile(sourceFile);
 
-      await expect(modifiedFile?.getText()).toMatchFileSnapshot(snapshot);
+      await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
     });
   });
 });
