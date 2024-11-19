@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "Node16",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2020"
+  }
+}

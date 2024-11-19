@@ -91,5 +91,17 @@ describe('convertFile', () => {
 
       await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
     });
+
+    it('handles functions exported as default from plain JavaScript files', async () => {
+      const projectDir = path.join(fixtures, 'module-exports-function-js');
+      const projectConfig = path.join(projectDir, 'tsconfig.json');
+      const snapshot = path.join(projectDir, 'src', 'build-example-index.snap.js');
+      const project = ProjectUtil.getProject(projectConfig);
+
+      const sourceFile = project.getSourceFile('build-example-index.js')!;
+      const modifiedFile = convertFile(sourceFile);
+
+      await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
+    });
   });
 });

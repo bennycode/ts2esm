@@ -1,4 +1,5 @@
 import {SourceFile, SyntaxKind, VariableStatement} from 'ts-morph';
+import {NodeUtil} from '../../util/NodeUtil.js';
 
 /**
  * Replaces a CommonJS require statement with an ESM import declaration.
@@ -61,10 +62,8 @@ export function replaceRequires(sourceFile: SourceFile) {
   if (hasShebang) {
     // The full text contains both comments and the following statment,
     // so we are separating the statement into comments and the instruction that follow on the next line.
-    const statementWithComment = firstStatement.getFullText();
-    const pureStatement = firstStatement.getText();
-    shebangText = statementWithComment.replace(pureStatement, '');
-    const lineAfterShebang = statementWithComment.replace(shebangText, '');
+    const {statement: lineAfterShebang, comment} = NodeUtil.extractComment(firstStatement);
+    shebangText = comment;
     // We remove the node containing the shebang comment (and the following statement) to insert only the pure statement.
     const index = firstStatement.getChildIndex();
     firstStatement.remove();
