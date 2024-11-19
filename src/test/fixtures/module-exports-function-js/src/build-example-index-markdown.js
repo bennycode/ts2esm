@@ -1,4 +1,4 @@
-import path from 'path';
-import info from './example-info.json';
+const path = require('path');
+const info = require('./example-info.json');
 
-export default function buildExampleMarkdown(names, exampleBasePaths) {}
+module.exports = function buildExampleMarkdown(names, exampleBasePaths) {};
