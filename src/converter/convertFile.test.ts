@@ -10,7 +10,7 @@ describe('convertFile', () => {
       const projectDir = path.join(fixtures, 'index-import');
       const projectConfig = path.join(projectDir, 'tsconfig.json');
       const project = ProjectUtil.getProject(projectConfig);
-      
+
       const snapshot = path.join(projectDir, 'src', 'main.snap.ts');
       const sourceFile = project.getSourceFile('main.ts')!;
       const modifiedFile = convertFile(sourceFile);
@@ -22,7 +22,7 @@ describe('convertFile', () => {
       const projectDir = path.join(fixtures, 'tsconfig-include');
       const projectConfig = path.join(projectDir, 'tsconfig.json');
       const project = ProjectUtil.getProject(projectConfig);
-      
+
       const snapshot = path.join(projectDir, 'src', 'consumer.snap.ts');
       const sourceFile = project.getSourceFile('consumer.ts')!;
       const modifiedFile = convertFile(sourceFile);
@@ -34,7 +34,7 @@ describe('convertFile', () => {
       const projectDir = path.join(fixtures, 'require-import');
       const projectConfig = path.join(projectDir, 'tsconfig.json');
       const project = ProjectUtil.getProject(projectConfig);
-      
+
       const snapshot = path.join(projectDir, 'src', 'main.snap.ts');
       const sourceFile = project.getSourceFile('main.ts')!;
       const modifiedFile = convertFile(sourceFile);
@@ -46,7 +46,7 @@ describe('convertFile', () => {
       const projectDir = path.join(fixtures, 'trailing-slash');
       const projectConfig = path.join(projectDir, 'tsconfig.json');
       const project = ProjectUtil.getProject(projectConfig);
-      
+
       const snapshot = path.join(projectDir, 'src', 'main.snap.ts');
       const sourceFile = project.getSourceFile('main.ts')!;
       const modifiedFile = convertFile(sourceFile);
@@ -58,7 +58,7 @@ describe('convertFile', () => {
       const projectDir = path.join(fixtures, 'cjs-shebang');
       const projectConfig = path.join(projectDir, 'tsconfig.json');
       const project = ProjectUtil.getProject(projectConfig);
-      
+
       const snapshot = path.join(projectDir, 'src', 'main.snap.ts');
       const sourceFile = project.getSourceFile('main.ts')!;
       const modifiedFile = convertFile(sourceFile);
@@ -70,7 +70,7 @@ describe('convertFile', () => {
       const projectDir = path.join(fixtures, 'cjs-destructuring');
       const projectConfig = path.join(projectDir, 'tsconfig.json');
       const project = ProjectUtil.getProject(projectConfig);
-      
+
       const snapshot = path.join(projectDir, 'src', 'main.snap.ts');
       const sourceFile = project.getSourceFile('main.ts')!;
       const modifiedFile = convertFile(sourceFile);
