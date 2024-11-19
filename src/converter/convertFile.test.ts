@@ -65,6 +65,18 @@ describe('convertFile', () => {
 
       await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
     });
+
+    it('handles named imports from require statements', async () => {
+      const projectDir = path.join(fixtures, 'cjs-destructuring');
+      const projectConfig = path.join(projectDir, 'tsconfig.json');
+      const snapshot = path.join(projectDir, 'src', 'main.snap.ts');
+      const project = ProjectUtil.getProject(projectConfig);
+
+      const sourceFile = project.getSourceFile('main.ts')!;
+      const modifiedFile = convertFile(sourceFile);
+
+      await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
+    });
   });
 
   describe('exports', () => {
