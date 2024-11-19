@@ -1,10 +1,10 @@
 import {SourceFile, SyntaxKind} from 'ts-morph';
+import {NodeUtil} from '../../util/NodeUtil.js';
 
 export function replaceModuleExports(sourceFile: SourceFile) {
   let defaultExport: string | undefined = undefined;
   const namedExports: string[] = [];
 
-  // Iterate through all statements in the source file
   sourceFile.getStatements().forEach(statement => {
     try {
       if (statement.getKind() === SyntaxKind.ExpressionStatement) {
@@ -12,19 +12,25 @@ export function replaceModuleExports(sourceFile: SourceFile) {
         if (!expressionStatement) {
           return;
         }
+
         const expression = expressionStatement.getExpression();
         if (expression.getKind() === SyntaxKind.BinaryExpression) {
           const binaryExpression = expression.asKind(SyntaxKind.BinaryExpression);
           if (!binaryExpression) {
             return;
           }
-          const left = binaryExpression.getLeft().getText();
-          const right = binaryExpression.getRight().getText();
 
-          if (left === 'module.exports') {
-            defaultExport = right;
+          const left = binaryExpression.getLeft().getText();
+          const right = binaryExpression.getRight();
+
+          // Handle `module.exports = <expression>;`
+          if (left === 'module.exports' && right) {
+            const {comment} = NodeUtil.extractComment(binaryExpression.getLeft());
+            defaultExport = right.getText();
+            sourceFile.addStatements(`${comment}export default ${defaultExport};`);
             statement.remove();
-          } else if (left.startsWith('module.exports.')) {
+          } else if (left.startsWith('module.exports.') && right) {
+            // Handle `module.exports.<name> = <value>;`
             const exportName = left.split('.')[2];
             if (exportName) {
               namedExports.push(exportName);
@@ -35,27 +41,19 @@ export function replaceModuleExports(sourceFile: SourceFile) {
       }
     } catch (error: unknown) {
       console.error(` There was an issue with "${sourceFile.getFilePath()}":`, error);
-      process.exit(1);
     }
   });
 
   try {
-    if (defaultExport) {
-      sourceFile.addExportAssignment({
-        expression: defaultExport,
-        isExportEquals: false,
+    if (namedExports.length > 0) {
+      sourceFile.addExportDeclaration({
+        namedExports,
       });
     }
-
-    namedExports.forEach(name => {
-      sourceFile.addExportDeclaration({
-        namedExports: [name],
-      });
-    });
   } catch (error: unknown) {
     console.error(` There was an issue with "${sourceFile.getFilePath()}":`, error);
   }
 
-  const madeChanges = namedExports.length || defaultExport;
-  return !!madeChanges;
+  const madeChanges = defaultExport !== undefined || namedExports.length > 0;
+  return madeChanges;
 }
