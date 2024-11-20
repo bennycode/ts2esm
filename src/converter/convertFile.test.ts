@@ -80,7 +80,7 @@ describe('convertFile', () => {
   });
 
   describe('exports', () => {
-    it('converts "module.exports" into ESM-exports', async () => {
+    it.only('converts "module.exports" into ESM-exports', async () => {
       const projectDir = path.join(fixtures, 'module-exports');
       const projectConfig = path.join(projectDir, 'tsconfig.json');
       const project = ProjectUtil.getProject(projectConfig);
@@ -89,7 +89,12 @@ describe('convertFile', () => {
       const sourceFile = project.getSourceFile('main.ts')!;
       const modifiedFile = convertFile(sourceFile);
 
+      const multipleNamedExports = project.getSourceFile('multiple-named-exports.ts')!;
+      const multipleNamedExportsActual = convertFile(multipleNamedExports);
+      const multipleNamedExportsExpected = path.join(projectDir, 'src', 'multiple-named-exports.snap.ts');
+
       await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
+      await expect(multipleNamedExportsActual?.getFullText()).toMatchFileSnapshot(multipleNamedExportsExpected);
     });
 
     it('handles functions exported as default from plain JavaScript files', async () => {
