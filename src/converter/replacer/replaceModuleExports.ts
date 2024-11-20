@@ -24,12 +24,12 @@ export function replaceModuleExports(sourceFile: SourceFile) {
           const right = binaryExpression.getRight();
 
           // Handle `module.exports = <expression>;`
-          if (left === 'module.exports' && right) {
+          if (left === 'module.exports') {
             const {comment} = NodeUtil.extractComment(binaryExpression.getLeft());
             defaultExport = right.getText();
             sourceFile.addStatements(`${comment}export default ${defaultExport};`);
             statement.remove();
-          } else if (left.startsWith('module.exports.') && right) {
+          } else if (left.startsWith('module.exports.')) {
             // Handle `module.exports.<name> = <value>;`
             const exportName = left.split('.')[2];
             if (exportName) {
