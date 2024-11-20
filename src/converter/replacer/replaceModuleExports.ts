@@ -28,8 +28,8 @@ export function replaceModuleExports(sourceFile: SourceFile) {
             defaultExport = right.getText();
             // Add `export default `
             sourceFile.addExportAssignment({
-              isExportEquals: false,
               expression: defaultExport,
+              isExportEquals: false,
             });
             // Remove `module.exports =`
             statement.remove();
