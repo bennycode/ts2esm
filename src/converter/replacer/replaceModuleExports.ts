@@ -47,8 +47,8 @@ export function replaceModuleExports(sourceFile: SourceFile) {
 
           if (isExportingIdentifier) {
             sourceFile.insertExportAssignment(position, {
-              isExportEquals: false,
               expression: rightText,
+              isExportEquals: false,
             });
           } else if (isExportingFunction) {
             sourceFile.insertStatements(position, `${comment}export default ${defaultExport};`);
