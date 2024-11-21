@@ -9,7 +9,7 @@ export class NodeUtil {
     const pureStatement = input.getText();
     const comment = statementWithComment.replace(pureStatement, '');
     const statement = statementWithComment.replace(comment, '');
-    const hasNoText = this.hasOnlyLineBreaks(comment) ? true : false;
+    const hasNoText = !!this.hasOnlyLineBreaks(comment);
     return {
       comment,
       hasNoText,
