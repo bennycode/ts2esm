@@ -20,18 +20,19 @@ export function replaceModuleExports(sourceFile: SourceFile) {
             return;
           }
 
-          const left = binaryExpression.getLeft().getText();
+          const left = binaryExpression.getLeft();
+          const leftText = left.getText();
           const right = binaryExpression.getRight();
+          const {comment} = NodeUtil.extractComment(left);
 
           // Handle `module.exports = <expression>;`
-          if (left === 'module.exports') {
-            const {comment} = NodeUtil.extractComment(binaryExpression.getLeft());
+          if (leftText === 'module.exports') {
             defaultExport = right.getText();
             sourceFile.addStatements(`${comment}export default ${defaultExport};`);
             statement.remove();
-          } else if (left.startsWith('module.exports.')) {
+          } else if (leftText.startsWith('module.exports.')) {
             // Handle `module.exports.<name> = <value>;`
-            const exportName = left.split('.')[2];
+            const exportName = leftText.split('.')[2];
             if (exportName) {
               namedExports.push(exportName);
               statement.remove();
