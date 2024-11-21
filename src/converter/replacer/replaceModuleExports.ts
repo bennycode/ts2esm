@@ -1,43 +1,67 @@
 import {SourceFile, SyntaxKind} from 'ts-morph';
 import {NodeUtil} from '../../util/NodeUtil.js';
 
+// module.exports = Benny
+// Binary Expression > PropertyAccessExpression + Identifier
+
+// module.exports = function some()
+// Binary Expression > PropertyAccessExpression + FunctionExpression
+
 export function replaceModuleExports(sourceFile: SourceFile) {
   let defaultExport: string | undefined = undefined;
+  let namedExportPosition: number | undefined = undefined;
   const namedExports: string[] = [];
 
   sourceFile.getStatements().forEach(statement => {
     try {
-      if (statement.getKind() === SyntaxKind.ExpressionStatement) {
-        const expressionStatement = statement.asKind(SyntaxKind.ExpressionStatement);
-        if (!expressionStatement) {
-          return;
+      const expressionStatement = statement.asKind(SyntaxKind.ExpressionStatement);
+      if (!expressionStatement) {
+        return;
+      }
+
+      const binaryExpression = expressionStatement.getExpression().asKind(SyntaxKind.BinaryExpression);
+      if (!binaryExpression) {
+        return;
+      }
+
+      const left = binaryExpression.getLeft().asKind(SyntaxKind.PropertyAccessExpression);
+      if (!left) {
+        return;
+      }
+
+      const right = binaryExpression.getRight();
+      const leftText = left.getText();
+      const rightText = right.getText();
+
+      const isDefaultExport = leftText === 'module.exports';
+      const isNamedExport = leftText.startsWith('module.exports.');
+      const isExportingFunction = right.getKind() === SyntaxKind.FunctionExpression;
+      const isExportingIdentifier = right.getKind() === SyntaxKind.Identifier;
+
+      const {comment} = NodeUtil.extractComment(left);
+
+      switch (true) {
+        case isDefaultExport: {
+          const position = expressionStatement.getChildIndex();
+          defaultExport = rightText;
+
+          if (isExportingIdentifier) {
+            sourceFile.insertExportAssignment(position, {
+              isExportEquals: false,
+              expression: rightText,
+            });
+          } else if (isExportingFunction) {
+            sourceFile.insertStatements(position, `${comment}export default ${defaultExport};`);
+          }
+
+          expressionStatement.remove();
+          break;
         }
-
-        const expression = expressionStatement.getExpression();
-        if (expression.getKind() === SyntaxKind.BinaryExpression) {
-          const binaryExpression = expression.asKind(SyntaxKind.BinaryExpression);
-          if (!binaryExpression) {
-            return;
-          }
-
-          const left = binaryExpression.getLeft();
-          const leftText = left.getText();
-          const right = binaryExpression.getRight();
-          const {comment} = NodeUtil.extractComment(left);
-
-          // Handle `module.exports = <expression>;`
-          if (leftText === 'module.exports') {
-            defaultExport = right.getText();
-            sourceFile.addStatements(`${comment}export default ${defaultExport};`);
-            statement.remove();
-          } else if (leftText.startsWith('module.exports.')) {
-            // Handle `module.exports.<name> = <value>;`
-            const exportName = leftText.split('.')[2];
-            if (exportName) {
-              namedExports.push(exportName);
-              statement.remove();
-            }
-          }
+        case isNamedExport && isExportingIdentifier: {
+          namedExportPosition ||= expressionStatement.getChildIndex();
+          namedExports.push(rightText);
+          expressionStatement.remove();
+          break;
         }
       }
     } catch (error: unknown) {
@@ -46,8 +70,8 @@ export function replaceModuleExports(sourceFile: SourceFile) {
   });
 
   try {
-    if (namedExports.length > 0) {
-      sourceFile.addExportDeclaration({
+    if (namedExports.length > 0 && namedExportPosition) {
+      sourceFile.insertExportDeclaration(namedExportPosition, {
         namedExports,
       });
     }
