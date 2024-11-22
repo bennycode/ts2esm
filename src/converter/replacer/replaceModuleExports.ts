@@ -51,13 +51,14 @@ export function replaceModuleExports(sourceFile: SourceFile) {
               isExportEquals: false,
             });
           } else if (isExportingFunction) {
+            // @see https://github.com/dsherret/ts-morph/issues/1586
             sourceFile.insertStatements(position, `${comment}export default ${defaultExport};`);
           }
 
           expressionStatement.remove();
           break;
         }
-        case isNamedExport && isExportingIdentifier: {
+        case isNamedExport: {
           namedExportPosition ||= expressionStatement.getChildIndex();
           namedExports.push(rightText);
           expressionStatement.remove();
