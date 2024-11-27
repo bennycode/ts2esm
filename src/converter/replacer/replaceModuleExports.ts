@@ -8,9 +8,8 @@ import {NodeUtil} from '../../util/NodeUtil.js';
 // Binary Expression > PropertyAccessExpression + FunctionExpression
 
 export function replaceModuleExports(sourceFile: SourceFile) {
-  let defaultExport: string | undefined = undefined;
-  let namedExportPosition: number | undefined = undefined;
-  const namedExports: string[] = [];
+  let foundDefaultExport: boolean = false;
+  let foundNamedExport: boolean = false;
 
   sourceFile.getStatements().forEach(statement => {
     try {
@@ -42,8 +41,8 @@ export function replaceModuleExports(sourceFile: SourceFile) {
 
       switch (true) {
         case isDefaultExport: {
+          foundDefaultExport = true;
           const position = expressionStatement.getChildIndex();
-          defaultExport = rightText;
 
           if (isExportingIdentifier) {
             sourceFile.insertExportAssignment(position, {
@@ -52,15 +51,18 @@ export function replaceModuleExports(sourceFile: SourceFile) {
             });
           } else if (isExportingFunction) {
             // @see https://github.com/dsherret/ts-morph/issues/1586
-            sourceFile.insertStatements(position, `${comment}export default ${defaultExport};`);
+            sourceFile.insertStatements(position, `${comment}export default ${rightText};`);
           }
 
           expressionStatement.remove();
           break;
         }
         case isNamedExport: {
-          namedExportPosition ||= expressionStatement.getChildIndex();
-          namedExports.push(rightText);
+          foundNamedExport = true;
+          const position = expressionStatement.getChildIndex();
+          sourceFile.insertExportDeclaration(position, {
+            namedExports: [rightText],
+          });
           expressionStatement.remove();
           break;
         }
@@ -70,16 +72,6 @@ export function replaceModuleExports(sourceFile: SourceFile) {
     }
   });
 
-  try {
-    if (namedExports.length > 0 && namedExportPosition) {
-      sourceFile.insertExportDeclaration(namedExportPosition, {
-        namedExports,
-      });
-    }
-  } catch (error: unknown) {
-    console.error(` There was an issue with "${sourceFile.getFilePath()}":`, error);
-  }
-
-  const madeChanges = defaultExport !== undefined || namedExports.length > 0;
+  const madeChanges = foundDefaultExport || foundNamedExport;
   return madeChanges;
 }

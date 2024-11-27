@@ -80,34 +80,48 @@ describe('convertFile', () => {
   });
 
   describe('exports', () => {
-    it('converts "module.exports" into ESM-exports', async () => {
-      const projectDir = path.join(fixtures, 'module-exports');
-      const projectConfig = path.join(projectDir, 'tsconfig.json');
-      const project = ProjectUtil.getProject(projectConfig);
+    describe('CJS (module.exports) to ESM', () => {
+      it('converts default and named exports', async () => {
+        const projectDir = path.join(fixtures, 'module-exports');
+        const projectConfig = path.join(projectDir, 'tsconfig.json');
+        const project = ProjectUtil.getProject(projectConfig);
 
-      const snapshot = path.join(projectDir, 'src', 'main.snap.ts');
-      const sourceFile = project.getSourceFile('main.ts')!;
-      const modifiedFile = convertFile(sourceFile);
+        const snapshot = path.join(projectDir, 'src', 'main.snap.ts');
+        const sourceFile = project.getSourceFile('main.ts')!;
+        const modifiedFile = convertFile(sourceFile);
 
-      await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
-    });
+        await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
+      });
 
-    it('handles functions exported as default from plain JavaScript files', async () => {
-      const projectDir = path.join(fixtures, 'module-exports-function-js');
-      const projectConfig = path.join(projectDir, 'tsconfig.json');
-      const project = ProjectUtil.getProject(projectConfig);
+      it('converts multiple named exports', async () => {
+        const projectDir = path.join(fixtures, 'module-exports');
+        const projectConfig = path.join(projectDir, 'tsconfig.json');
+        const project = ProjectUtil.getProject(projectConfig);
 
-      const snapshot = path.join(projectDir, 'src', 'build-example-index.snap.js');
-      const snapshot2 = path.join(projectDir, 'src', 'build-example-index-markdown.snap.js');
+        const snapshot = path.join(projectDir, 'src', 'multiple-named-exports.snap.ts');
+        const sourceFile = project.getSourceFile('multiple-named-exports.ts')!;
+        const modifiedFile = convertFile(sourceFile);
 
-      const sourceFile = project.getSourceFile('build-example-index.js')!;
-      const modifiedFile = convertFile(sourceFile);
+        await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
+      });
 
-      const sourceFile2 = project.getSourceFile('build-example-index-markdown.js')!;
-      const modifiedFile2 = convertFile(sourceFile2);
+      it('handles functions exported as default from plain JavaScript files', async () => {
+        const projectDir = path.join(fixtures, 'module-exports-function-js');
+        const projectConfig = path.join(projectDir, 'tsconfig.json');
+        const project = ProjectUtil.getProject(projectConfig);
 
-      await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
-      await expect(modifiedFile2?.getFullText()).toMatchFileSnapshot(snapshot2);
+        const snapshot = path.join(projectDir, 'src', 'build-example-index.snap.js');
+        const snapshot2 = path.join(projectDir, 'src', 'build-example-index-markdown.snap.js');
+
+        const sourceFile = project.getSourceFile('build-example-index.js')!;
+        const modifiedFile = convertFile(sourceFile);
+
+        const sourceFile2 = project.getSourceFile('build-example-index-markdown.js')!;
+        const modifiedFile2 = convertFile(sourceFile2);
+
+        await expect(modifiedFile?.getFullText()).toMatchFileSnapshot(snapshot);
+        await expect(modifiedFile2?.getFullText()).toMatchFileSnapshot(snapshot2);
+      });
     });
   });
 });
