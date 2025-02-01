@@ -13,7 +13,7 @@
     "json-diff": "^1.0.6",
     "jsonpatch": "^3.1.0",
     "ts-morph": "^25.0.0",
-    "typescript": "5.7.2"
+    "typescript": "5.7.3"
   },
   "description": "Transforms TypeScript imports and exports into ESM-compatible declarations.",
   "devDependencies": {
