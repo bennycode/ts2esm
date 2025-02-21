@@ -1,5 +1,31 @@
 import {SourceFile, SyntaxKind, VariableStatement} from 'ts-morph';
 import {NodeUtil} from '../../util/NodeUtil.js';
+import {replaceModulePath} from './addFileExtensions.js';
+
+function replaceDynamicImport(sourceFile: SourceFile, statement: VariableStatement) {
+  let madeChanges: boolean = false;
+
+  statement.getDeclarations().forEach(declaration => {
+    const initializer = declaration.getInitializerIfKind(SyntaxKind.AwaitExpression);
+    const callExpression = initializer?.getExpressionIfKind(SyntaxKind.CallExpression);
+    const importExpression = callExpression?.getExpressionIfKind(SyntaxKind.ImportKeyword);
+    if (importExpression) {
+      const literals = initializer?.getDescendantsOfKind(SyntaxKind.StringLiteral);
+      literals?.forEach(stringLiteral => {
+        const adjustedImport = replaceModulePath({
+          hasAttributesClause: false,
+          stringLiteral,
+          sourceFile,
+        });
+        if (adjustedImport) {
+          madeChanges = true;
+        }
+      });
+    }
+  });
+
+  return madeChanges;
+}
 
 /**
  * Replaces a CommonJS require statement with an ESM import declaration.
@@ -17,19 +43,19 @@ function replaceRequire(sourceFile: SourceFile, statement: VariableStatement) {
 
   // Get call expression from variable declaration
   // @see https://github.com/dsherret/ts-morph/issues/682#issuecomment-520246214
-  const initializer = declaration.getInitializerIfKind(SyntaxKind.CallExpression);
-  if (!initializer) {
+  const callExpression = declaration.getInitializerIfKind(SyntaxKind.CallExpression);
+  if (!callExpression) {
     return false;
   }
 
   // Verify that we have a "require" call
-  const identifier = initializer.getExpression().asKind(SyntaxKind.Identifier);
+  const identifier = callExpression.getExpressionIfKind(SyntaxKind.Identifier);
   if (identifier?.getText() !== 'require') {
     return false;
   }
 
   // Extract the argument passed to "require" and use its value
-  const requireArguments = initializer.getArguments();
+  const requireArguments = callExpression.getArguments();
   const packageName = requireArguments[0];
   if (!packageName) {
     return false;
@@ -52,7 +78,7 @@ function replaceRequire(sourceFile: SourceFile, statement: VariableStatement) {
   return true;
 }
 
-export function replaceRequires(sourceFile: SourceFile) {
+export function replaceRequiresAndShebang(sourceFile: SourceFile) {
   let madeChanges: boolean = false;
 
   // Handle files with "#! /usr/bin/env node" pragma
@@ -70,14 +96,23 @@ export function replaceRequires(sourceFile: SourceFile) {
     sourceFile.insertStatements(index, lineAfterShebang);
   }
 
+  // TODO: Traverse statements, make changes, save changes and ONLY after that, proceed with the next statements...
   sourceFile.getVariableStatements().forEach(statement => {
     try {
       const updatedRequire = replaceRequire(sourceFile, statement);
       if (updatedRequire) {
-        madeChanges = true;
+        return (madeChanges = true);
       }
+
+      const updatedDynamicImport = replaceDynamicImport(sourceFile, statement);
+      if (updatedDynamicImport) {
+        return (madeChanges = true);
+      }
+
+      return false;
     } catch (error: unknown) {
       console.error(` There was an issue with "${sourceFile.getFilePath()}":`, error);
+      return false;
     }
   });
 

@@ -7,12 +7,8 @@ import path from 'node:path';
 import {PathFinder} from '../../util/PathFinder.js';
 import {getNormalizedPath, isNodeModuleRoot} from '../../util/PathUtil.js';
 
-export function replaceFileExtensions(sourceFile: SourceFile, type: 'import' | 'export') {
+export function addFileExtensions(sourceFile: SourceFile, type: 'import' | 'export') {
   let madeChanges: boolean = false;
-
-  const paths = ProjectUtil.getPaths(sourceFile.getProject());
-  const tsConfigFilePath = ProjectUtil.getTsConfigFilePath(sourceFile);
-  const projectDirectory = ProjectUtil.getRootDirectory(tsConfigFilePath);
   const identifier = type === 'import' ? 'getImportDeclarations' : 'getExportDeclarations';
 
   sourceFile[identifier]().forEach(declaration => {
@@ -21,10 +17,8 @@ export function replaceFileExtensions(sourceFile: SourceFile, type: 'import' | '
         const hasAttributesClause = !!declaration.getAttributes();
         const adjustedImport = replaceModulePath({
           hasAttributesClause,
-          paths,
-          projectDirectory,
-          sourceFilePath: sourceFile.getFilePath(),
           stringLiteral,
+          sourceFile,
         });
         if (adjustedImport) {
           madeChanges = true;
@@ -38,20 +32,19 @@ export function replaceFileExtensions(sourceFile: SourceFile, type: 'import' | '
   return madeChanges;
 }
 
-function replaceModulePath({
+export function replaceModulePath({
   hasAttributesClause,
-  paths,
-  projectDirectory,
-  sourceFilePath,
   stringLiteral,
+  sourceFile,
 }: {
   hasAttributesClause: boolean;
-  paths: Record<string, string[]> | undefined;
-  projectDirectory: string;
-  sourceFilePath: string;
   stringLiteral: StringLiteral;
+  sourceFile: SourceFile;
 }) {
-  const info = parseInfo(sourceFilePath, stringLiteral, paths);
+  const paths = ProjectUtil.getPaths(sourceFile.getProject());
+  const tsConfigFilePath = ProjectUtil.getTsConfigFilePath(sourceFile);
+  const projectDirectory = ProjectUtil.getRootDirectory(tsConfigFilePath);
+  const info = parseInfo(sourceFile.getFilePath(), stringLiteral, paths);
   const replacement = createReplacementPath({hasAttributesClause, info, paths, projectDirectory});
   if (replacement) {
     stringLiteral.replaceWithText(replacement);

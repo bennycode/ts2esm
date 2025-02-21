@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "node16",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2020"
+  }
+}
