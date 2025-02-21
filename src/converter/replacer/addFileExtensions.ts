@@ -17,8 +17,8 @@ export function addFileExtensions(sourceFile: SourceFile, type: 'import' | 'expo
         const hasAttributesClause = !!declaration.getAttributes();
         const adjustedImport = replaceModulePath({
           hasAttributesClause,
-          stringLiteral,
           sourceFile,
+          stringLiteral,
         });
         if (adjustedImport) {
           madeChanges = true;

@@ -14,8 +14,8 @@ function replaceDynamicImport(sourceFile: SourceFile, statement: VariableStateme
       literals?.forEach(stringLiteral => {
         const adjustedImport = replaceModulePath({
           hasAttributesClause: false,
-          stringLiteral,
           sourceFile,
+          stringLiteral,
         });
         if (adjustedImport) {
           madeChanges = true;
