@@ -1,31 +1,5 @@
 import {SourceFile, SyntaxKind, VariableStatement} from 'ts-morph';
 import {NodeUtil} from '../../util/NodeUtil.js';
-import {replaceModulePath} from './addFileExtensions.js';
-
-function replaceDynamicImport(sourceFile: SourceFile, statement: VariableStatement) {
-  let madeChanges: boolean = false;
-
-  statement.getDeclarations().forEach(declaration => {
-    const initializer = declaration.getInitializerIfKind(SyntaxKind.AwaitExpression);
-    const callExpression = initializer?.getExpressionIfKind(SyntaxKind.CallExpression);
-    const importExpression = callExpression?.getExpressionIfKind(SyntaxKind.ImportKeyword);
-    if (importExpression) {
-      const literals = initializer?.getDescendantsOfKind(SyntaxKind.StringLiteral);
-      literals?.forEach(stringLiteral => {
-        const adjustedImport = replaceModulePath({
-          hasAttributesClause: false,
-          sourceFile,
-          stringLiteral,
-        });
-        if (adjustedImport) {
-          madeChanges = true;
-        }
-      });
-    }
-  });
-
-  return madeChanges;
-}
 
 /**
  * Replaces a CommonJS require statement with an ESM import declaration.
@@ -86,7 +60,7 @@ export function replaceRequiresAndShebang(sourceFile: SourceFile) {
   const hasShebang = firstStatement && firstStatement?.getFullText().startsWith('#!');
   let shebangText = '';
   if (hasShebang) {
-    // The full text contains both comments and the following statment,
+    // The full text contains both comments and the following statement,
     // so we are separating the statement into comments and the instruction that follow on the next line.
     const {statement: lineAfterShebang, comment} = NodeUtil.extractComment(firstStatement);
     shebangText = comment;
@@ -96,20 +70,15 @@ export function replaceRequiresAndShebang(sourceFile: SourceFile) {
     sourceFile.insertStatements(index, lineAfterShebang);
   }
 
-  // TODO: Traverse statements, make changes, save changes and ONLY after that, proceed with the next statements...
   sourceFile.getVariableStatements().forEach(statement => {
     try {
       const updatedRequire = replaceRequire(sourceFile, statement);
+
       if (updatedRequire) {
-        return (madeChanges = true);
+        madeChanges = true;
       }
 
-      const updatedDynamicImport = replaceDynamicImport(sourceFile, statement);
-      if (updatedDynamicImport) {
-        return (madeChanges = true);
-      }
-
-      return false;
+      return madeChanges;
     } catch (error: unknown) {
       console.error(` There was an issue with "${sourceFile.getFilePath()}":`, error);
       return false;

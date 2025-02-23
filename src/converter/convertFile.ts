@@ -1,7 +1,8 @@
 import {SourceFile} from 'ts-morph';
 import {addFileExtensions} from './replacer/addFileExtensions.js';
 import {replaceModuleExports} from './replacer/replaceModuleExports.js';
-import {replaceRequiresAndShebang} from './replacer/replaceRequire.js';
+import {replaceRequiresAndShebang} from './replacer/replaceRequiresAndShebang.js';
+import {replaceDynamicImports} from './replacer/replaceDynamicImports.js';
 
 /**
  * Returns the source file ONLY if it was modified.
@@ -12,6 +13,12 @@ export function convertFile(sourceFile: SourceFile) {
   // Update "require" statements to "import" statements
   const updatedRequires = replaceRequiresAndShebang(sourceFile);
   if (updatedRequires) {
+    madeChanges = true;
+  }
+
+  // Update "await import" statements
+  const updatedDynamicImports = replaceDynamicImports(sourceFile);
+  if (updatedDynamicImports) {
     madeChanges = true;
   }
 
