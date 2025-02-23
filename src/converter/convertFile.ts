@@ -1,7 +1,8 @@
 import {SourceFile} from 'ts-morph';
-import {replaceFileExtensions} from './replacer/replaceFileExtensions.js';
+import {addFileExtensions} from './replacer/addFileExtensions.js';
 import {replaceModuleExports} from './replacer/replaceModuleExports.js';
-import {replaceRequires} from './replacer/replaceRequire.js';
+import {replaceRequiresAndShebang} from './replacer/replaceRequiresAndShebang.js';
+import {replaceDynamicImports} from './replacer/replaceDynamicImports.js';
 
 /**
  * Returns the source file ONLY if it was modified.
@@ -10,8 +11,14 @@ export function convertFile(sourceFile: SourceFile) {
   let madeChanges: boolean = false;
 
   // Update "require" statements to "import" statements
-  const updatedRequires = replaceRequires(sourceFile);
+  const updatedRequires = replaceRequiresAndShebang(sourceFile);
   if (updatedRequires) {
+    madeChanges = true;
+  }
+
+  // Update "await import" statements
+  const updatedDynamicImports = replaceDynamicImports(sourceFile);
+  if (updatedDynamicImports) {
     madeChanges = true;
   }
 
@@ -22,13 +29,13 @@ export function convertFile(sourceFile: SourceFile) {
   }
 
   // Add explicit file extensions to imports
-  const replacedImportFileExtensions = replaceFileExtensions(sourceFile, 'import');
+  const replacedImportFileExtensions = addFileExtensions(sourceFile, 'import');
   if (replacedImportFileExtensions) {
     madeChanges = true;
   }
 
   // Add explicit file extensions to exports
-  const replacedExportFileExtensions = replaceFileExtensions(sourceFile, 'export');
+  const replacedExportFileExtensions = addFileExtensions(sourceFile, 'export');
   if (replacedExportFileExtensions) {
     madeChanges = true;
   }

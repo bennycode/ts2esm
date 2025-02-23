@@ -1,57 +1,24 @@
-import {SourceFile, SyntaxKind} from 'ts-morph';
-import {ProjectUtil} from '../../util/ProjectUtil.js';
-import {StringLiteral} from 'ts-morph';
-import {ModuleInfo, parseInfo} from '../../parser/InfoParser.js';
-import {toImport, toImportAttribute} from '../ImportConverter.js';
+import {SourceFile, StringLiteral} from 'ts-morph';
+import {ModuleInfo, parseInfo} from '../parser/InfoParser.js';
+import {ProjectUtil} from './ProjectUtil.js';
+import {toImport, toImportAttribute} from '../converter/ImportConverter.js';
+import {getNormalizedPath, isNodeModuleRoot} from './PathUtil.js';
 import path from 'node:path';
-import {PathFinder} from '../../util/PathFinder.js';
-import {getNormalizedPath, isNodeModuleRoot} from '../../util/PathUtil.js';
+import {PathFinder} from './PathFinder.js';
 
-export function replaceFileExtensions(sourceFile: SourceFile, type: 'import' | 'export') {
-  let madeChanges: boolean = false;
-
+export function replaceModulePath({
+  hasAttributesClause,
+  stringLiteral,
+  sourceFile,
+}: {
+  hasAttributesClause: boolean;
+  stringLiteral: StringLiteral;
+  sourceFile: SourceFile;
+}) {
   const paths = ProjectUtil.getPaths(sourceFile.getProject());
   const tsConfigFilePath = ProjectUtil.getTsConfigFilePath(sourceFile);
   const projectDirectory = ProjectUtil.getRootDirectory(tsConfigFilePath);
-  const identifier = type === 'import' ? 'getImportDeclarations' : 'getExportDeclarations';
-
-  sourceFile[identifier]().forEach(declaration => {
-    try {
-      declaration.getDescendantsOfKind(SyntaxKind.StringLiteral).forEach(stringLiteral => {
-        const hasAttributesClause = !!declaration.getAttributes();
-        const adjustedImport = replaceModulePath({
-          hasAttributesClause,
-          paths,
-          projectDirectory,
-          sourceFilePath: sourceFile.getFilePath(),
-          stringLiteral,
-        });
-        if (adjustedImport) {
-          madeChanges = true;
-        }
-      });
-    } catch (error: unknown) {
-      console.error(` There was an issue with "${sourceFile.getFilePath()}":`, error);
-    }
-  });
-
-  return madeChanges;
-}
-
-function replaceModulePath({
-  hasAttributesClause,
-  paths,
-  projectDirectory,
-  sourceFilePath,
-  stringLiteral,
-}: {
-  hasAttributesClause: boolean;
-  paths: Record<string, string[]> | undefined;
-  projectDirectory: string;
-  sourceFilePath: string;
-  stringLiteral: StringLiteral;
-}) {
-  const info = parseInfo(sourceFilePath, stringLiteral, paths);
+  const info = parseInfo(sourceFile.getFilePath(), stringLiteral, paths);
   const replacement = createReplacementPath({hasAttributesClause, info, paths, projectDirectory});
   if (replacement) {
     stringLiteral.replaceWithText(replacement);

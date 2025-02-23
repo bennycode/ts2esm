@@ -17,19 +17,19 @@ function replaceRequire(sourceFile: SourceFile, statement: VariableStatement) {
 
   // Get call expression from variable declaration
   // @see https://github.com/dsherret/ts-morph/issues/682#issuecomment-520246214
-  const initializer = declaration.getInitializerIfKind(SyntaxKind.CallExpression);
-  if (!initializer) {
+  const callExpression = declaration.getInitializerIfKind(SyntaxKind.CallExpression);
+  if (!callExpression) {
     return false;
   }
 
   // Verify that we have a "require" call
-  const identifier = initializer.getExpression().asKind(SyntaxKind.Identifier);
+  const identifier = callExpression.getExpressionIfKind(SyntaxKind.Identifier);
   if (identifier?.getText() !== 'require') {
     return false;
   }
 
   // Extract the argument passed to "require" and use its value
-  const requireArguments = initializer.getArguments();
+  const requireArguments = callExpression.getArguments();
   const packageName = requireArguments[0];
   if (!packageName) {
     return false;
@@ -52,7 +52,7 @@ function replaceRequire(sourceFile: SourceFile, statement: VariableStatement) {
   return true;
 }
 
-export function replaceRequires(sourceFile: SourceFile) {
+export function replaceRequiresAndShebang(sourceFile: SourceFile) {
   let madeChanges: boolean = false;
 
   // Handle files with "#! /usr/bin/env node" pragma
@@ -60,7 +60,7 @@ export function replaceRequires(sourceFile: SourceFile) {
   const hasShebang = firstStatement && firstStatement?.getFullText().startsWith('#!');
   let shebangText = '';
   if (hasShebang) {
-    // The full text contains both comments and the following statment,
+    // The full text contains both comments and the following statement,
     // so we are separating the statement into comments and the instruction that follow on the next line.
     const {statement: lineAfterShebang, comment} = NodeUtil.extractComment(firstStatement);
     shebangText = comment;
@@ -73,11 +73,15 @@ export function replaceRequires(sourceFile: SourceFile) {
   sourceFile.getVariableStatements().forEach(statement => {
     try {
       const updatedRequire = replaceRequire(sourceFile, statement);
+
       if (updatedRequire) {
         madeChanges = true;
       }
+
+      return madeChanges;
     } catch (error: unknown) {
       console.error(` There was an issue with "${sourceFile.getFilePath()}":`, error);
+      return false;
     }
   });
 
