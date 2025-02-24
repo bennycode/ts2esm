@@ -44,16 +44,18 @@ function createReplacementPath({
 
   const comesFromPathAlias = !!info.pathAlias && !!paths;
   const isNodeModulesPath = !info.isRelative && info.normalized.includes('/') && !comesFromPathAlias;
+
   if (info.isRelative || comesFromPathAlias || isNodeModulesPath) {
     if (['.json', '.css'].includes(info.extension)) {
       return toImportAttribute(info);
     }
 
     // If an import does not have a file extension or isn't an extension recognized here and can't be found locally (perhaps
-    // file had . in name), try to find a matching file by traversing through all valid TypeScript source file extensions.
+    // file had "." in name), try to find a matching file by traversing through all valid TypeScript source file extensions.
     let baseFilePath = comesFromPathAlias
       ? getNormalizedPath(projectDirectory, info, paths)
       : path.join(info.directory, info.normalized);
+
     if (isNodeModulesPath) {
       baseFilePath = path.join(projectDirectory, 'node_modules', info.normalized);
     }
@@ -68,5 +70,6 @@ function createReplacementPath({
       return toImport({...info, extension: foundPath.extension});
     }
   }
+
   return null;
 }
