@@ -22,7 +22,7 @@
     "@tstv/tsconfig-common": "^3.7.0",
     "@types/node": "^20.17.19",
     "@vitest/coverage-v8": "^3.0.6",
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.0.0",
     "eslint": "^8.57.1",
     "generate-changelog": "^1.8.0",
     "prettier": "^3.5.1",
