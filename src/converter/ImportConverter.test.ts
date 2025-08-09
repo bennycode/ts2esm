@@ -130,6 +130,32 @@ describe('ImportConverter', () => {
       ).toBe(`'./add.mjs'`);
     });
 
+    it('works with absolute imports (baseUrl behavior)', () => {
+      expect(
+        toImport({
+          declaration: `'components/App'`,
+          extension: '.js',
+          quoteSymbol: `'`,
+        })
+      ).toBe(`'components/App.js'`);
+      
+      expect(
+        toImport({
+          declaration: `"utils/helper"`,
+          extension: '.js',
+          quoteSymbol: `"`,
+        })
+      ).toBe(`"utils/helper.js"`);
+      
+      expect(
+        toImport({
+          declaration: `'features/auth/AuthComponent'`,
+          extension: '.jsx',
+          quoteSymbol: `'`,
+        })
+      ).toBe(`'features/auth/AuthComponent.jsx'`);
+    });
+
     it('does not add a slash after another slash', () => {
       expect(toImport({declaration: "'./io/'", extension: '/index.js', quoteSymbol: "'"})).toBe(`'./io/index.js'`);
     });
