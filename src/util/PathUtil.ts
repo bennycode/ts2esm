@@ -62,3 +62,16 @@ export function isNodeModuleRoot(directory: string): boolean {
   const packageJsonExists = fs.existsSync(packageJsonPath);
   return isInNodeModules && packageJsonExists;
 }
+
+export function hasPackageExports(packageDirectory: string): boolean {
+  try {
+    const packageJsonPath = path.join(packageDirectory, 'package.json');
+    if (!fs.existsSync(packageJsonPath)) {
+      return false;
+    }
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+    return !!packageJson.exports;
+  } catch {
+    return false;
+  }
+}
