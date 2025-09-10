@@ -2,7 +2,7 @@ import {SourceFile, StringLiteral} from 'ts-morph';
 import {ModuleInfo, parseInfo} from '../parser/InfoParser.js';
 import {ProjectUtil} from './ProjectUtil.js';
 import {toImport, toImportAttribute} from '../converter/ImportConverter.js';
-import {getNormalizedPath, isNodeModuleRoot} from './PathUtil.js';
+import {getNormalizedPath, isNodeModuleRoot, hasPackageExports} from './PathUtil.js';
 import path from 'node:path';
 import {PathFinder} from './PathFinder.js';
 
@@ -27,6 +27,17 @@ export function replaceModulePath({
   return false;
 }
 
+function getPackageNameFromModulePath(modulePath: string): string {
+  // Handle scoped packages like @scope/package-name/subpath
+  if (modulePath.startsWith('@')) {
+    const parts = modulePath.split('/');
+    return parts.length >= 2 ? `${parts[0]}/${parts[1]}` : modulePath;
+  }
+  // Handle regular packages like package-name/subpath
+  const parts = modulePath.split('/');
+  return parts[0] || modulePath;
+}
+
 function createReplacementPath({
   hasAttributesClause,
   info,
@@ -44,6 +55,18 @@ function createReplacementPath({
 
   const comesFromPathAlias = !!info.pathAlias && !!paths;
   const isNodeModulesPath = !info.isRelative && info.normalized.includes('/') && !comesFromPathAlias;
+  
+  // For node modules imports, check if the package has exports field
+  if (isNodeModulesPath) {
+    const packageName = getPackageNameFromModulePath(info.normalized);
+    const packageDirectory = path.join(projectDirectory, 'node_modules', packageName);
+    
+    // If package has exports field, don't modify the import (modern package)
+    if (hasPackageExports(packageDirectory)) {
+      return null;
+    }
+  }
+  
   if (info.isRelative || comesFromPathAlias || isNodeModulesPath) {
     if (['.json', '.css'].includes(info.extension)) {
       return toImportAttribute(info);
