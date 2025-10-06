@@ -18,8 +18,9 @@ export function replaceModulePath({
   const paths = ProjectUtil.getPaths(sourceFile.getProject());
   const tsConfigFilePath = ProjectUtil.getTsConfigFilePath(sourceFile);
   const projectDirectory = ProjectUtil.getRootDirectory(tsConfigFilePath);
+  const compilerOptions = sourceFile.getProject().getCompilerOptions();
   const info = parseInfo(sourceFile.getFilePath(), stringLiteral, paths);
-  const replacement = createReplacementPath({hasAttributesClause, info, paths, projectDirectory});
+  const replacement = createReplacementPath({hasAttributesClause, info, paths, projectDirectory, compilerOptions});
   if (replacement) {
     stringLiteral.replaceWithText(replacement);
     return true;
@@ -32,19 +33,24 @@ function createReplacementPath({
   info,
   paths,
   projectDirectory,
+  compilerOptions,
 }: {
   hasAttributesClause: boolean;
   info: ModuleInfo;
   paths: Record<string, string[]> | undefined;
   projectDirectory: string;
+  compilerOptions: any;
 }) {
   if (hasAttributesClause) {
     return null;
   }
 
   const comesFromPathAlias = !!info.pathAlias && !!paths;
-  const isNodeModulesPath = !info.isRelative && info.normalized.includes('/') && !comesFromPathAlias;
-  if (info.isRelative || comesFromPathAlias || isNodeModulesPath) {
+  
+  // Check if it's an absolute import within the project (not from node_modules)
+  const isProjectAbsoluteImport = !info.isRelative && !comesFromPathAlias && info.normalized.includes('/');
+  
+  if (info.isRelative || comesFromPathAlias || isProjectAbsoluteImport) {
     if (['.json', '.css'].includes(info.extension)) {
       return toImportAttribute(info);
     }
@@ -54,11 +60,15 @@ function createReplacementPath({
     let baseFilePath = comesFromPathAlias
       ? getNormalizedPath(projectDirectory, info, paths)
       : path.join(info.directory, info.normalized);
-    if (isNodeModulesPath) {
-      baseFilePath = path.join(projectDirectory, 'node_modules', info.normalized);
+    
+    if (isProjectAbsoluteImport) {
+      // For absolute imports, resolve relative to the baseUrl directory
+      const baseUrlPath = compilerOptions.baseUrl ? path.resolve(projectDirectory, compilerOptions.baseUrl) : projectDirectory;
+      baseFilePath = path.join(baseUrlPath, info.normalized);
     }
 
     const foundPath = PathFinder.findPath(baseFilePath, info.extension);
+    
     if (foundPath) {
       // TODO: Write test case for this condition, mock "path" and "fs" calls if necessary
       if (foundPath.extension === '/index.js' && isNodeModuleRoot(baseFilePath)) {
@@ -66,6 +76,18 @@ function createReplacementPath({
         return null;
       }
       return toImport({...info, extension: foundPath.extension});
+    }
+    
+    // If we didn't find the file as an absolute import, try node_modules as a fallback
+    if (isProjectAbsoluteImport) {
+      const nodeModulesPath = path.join(projectDirectory, 'node_modules', info.normalized);
+      const nodeFoundPath = PathFinder.findPath(nodeModulesPath, info.extension);
+      if (nodeFoundPath) {
+        if (nodeFoundPath.extension === '/index.js' && isNodeModuleRoot(nodeModulesPath)) {
+          return null;
+        }
+        return toImport({...info, extension: nodeFoundPath.extension});
+      }
     }
   }
   return null;
