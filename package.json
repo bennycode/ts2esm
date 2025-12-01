@@ -18,7 +18,7 @@
   "description": "Transforms TypeScript imports and exports into ESM-compatible declarations.",
   "devDependencies": {
     "@evilmartians/lefthook": "^2.0.2",
-    "@tstv/eslint-config": "^3.2.4",
+    "@tstv/eslint-config": "^4.1.1",
     "@tstv/tsconfig-common": "^3.7.0",
     "@types/node": "^20.17.19",
     "@vitest/coverage-v8": "^3.0.6",
