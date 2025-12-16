@@ -50,6 +50,10 @@ describe('convertFile', () => {
     it('handles named imports from require statements', async () => {
       await testFileConversion('cjs-destructuring');
     });
+
+    it('handles package exports (legacy vs modern packages)', async () => {
+      await testFileConversion('package-exports');
+    });
   });
 
   describe('exports', () => {

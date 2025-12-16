@@ -2,6 +2,7 @@ import {
   findBestMatch,
   getNormalizedPath,
   hasRelativePath,
+  hasPackageExports,
   isMatchingPath,
   removePathAlias,
   removeWildCards,
@@ -92,6 +93,22 @@ describe('PathUtil', () => {
       // others
       expect(hasRelativePath('node:path')).toBe(false);
       expect(hasRelativePath('vitest')).toBe(false);
+    });
+  });
+
+  describe('hasPackageExports', () => {
+    const packageExportsTestDir = '/home/runner/work/ts2esm/ts2esm/src/test/fixtures/package-exports/node_modules';
+    
+    it('detects packages with exports field', () => {
+      expect(hasPackageExports(`${packageExportsTestDir}/firebase-functions`)).toBe(true);
+    });
+
+    it('detects packages without exports field', () => {
+      expect(hasPackageExports(`${packageExportsTestDir}/lodash`)).toBe(false);
+    });
+
+    it('returns false for non-existent packages', () => {
+      expect(hasPackageExports('/non/existent/path')).toBe(false);
     });
   });
 });
