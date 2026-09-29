@@ -62,6 +62,22 @@ describe('convertFile', () => {
         await testFileConversion('module-exports', 'multiple-named-exports');
       });
 
+      it('converts object literals with identifiers into named exports', async () => {
+        await testFileConversion('module-exports', 'object-literal');
+      });
+
+      it('keeps object literals with other values as a default export', async () => {
+        await testFileConversion('module-exports', 'object-literal-values');
+      });
+
+      it('converts named exports with other names or non-identifier values', async () => {
+        await testFileConversion('module-exports', 'named-export-values');
+      });
+
+      it('aliases named exports that clash with local names or reserved words', async () => {
+        await testFileConversion('module-exports', 'named-export-conflicts');
+      });
+
       it('handles functions exported as default from plain JavaScript files', async () => {
         await testFileConversion('module-exports-function-js', 'build-example-index', 'js');
         await testFileConversion('module-exports-function-js', 'build-example-index-markdown', 'js');
