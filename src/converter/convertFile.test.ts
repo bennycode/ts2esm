@@ -31,6 +31,10 @@ describe('convertFile', () => {
       await testFileConversion('tsconfig-include', 'consumer');
     });
 
+    it('resolves path aliases declared in an extended tsconfig of a monorepo', async () => {
+      await testFileConversion('monorepo-paths/apps/myapp');
+    });
+
     it('converts CJS require statements into ESM imports', async () => {
       await testFileConversion('require-import');
     });

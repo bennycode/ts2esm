@@ -2,7 +2,7 @@ import {SourceFile, StringLiteral, ts} from 'ts-morph';
 import {ModuleInfo, parseInfo} from '../parser/InfoParser.js';
 import {ProjectUtil} from './ProjectUtil.js';
 import {toImport, toImportAttribute} from '../converter/ImportConverter.js';
-import {getNormalizedPath} from './PathUtil.js';
+import {getNormalizedPaths} from './PathUtil.js';
 import path from 'node:path';
 import {PathFinder} from './PathFinder.js';
 
@@ -16,10 +16,9 @@ export function replaceModulePath({
   sourceFile: SourceFile;
 }) {
   const paths = ProjectUtil.getPaths(sourceFile.getProject());
-  const tsConfigFilePath = ProjectUtil.getTsConfigFilePath(sourceFile);
-  const projectDirectory = ProjectUtil.getRootDirectory(tsConfigFilePath);
+  const pathsBaseDirectory = ProjectUtil.getPathsBaseDirectory(sourceFile);
   const info = parseInfo(sourceFile.getFilePath(), stringLiteral, paths);
-  const replacement = createReplacementPath({hasAttributesClause, info, paths, projectDirectory});
+  const replacement = createReplacementPath({hasAttributesClause, info, paths, pathsBaseDirectory});
   if (replacement) {
     stringLiteral.replaceWithText(replacement);
     return true;
@@ -31,12 +30,12 @@ function createReplacementPath({
   hasAttributesClause,
   info,
   paths,
-  projectDirectory,
+  pathsBaseDirectory,
 }: {
   hasAttributesClause: boolean;
   info: ModuleInfo;
   paths: Record<string, string[]> | undefined;
-  projectDirectory: string;
+  pathsBaseDirectory: string;
 }) {
   if (hasAttributesClause) {
     return null;
@@ -55,13 +54,15 @@ function createReplacementPath({
 
     // If an import does not have a file extension or isn't an extension recognized here and can't be found locally (perhaps
     // file had . in name), try to find a matching file by traversing through all valid TypeScript source file extensions.
-    const baseFilePath = comesFromPathAlias
-      ? getNormalizedPath(projectDirectory, info, paths)
-      : path.join(info.directory, info.normalized);
+    const baseFilePaths = comesFromPathAlias
+      ? getNormalizedPaths(pathsBaseDirectory, info, paths)
+      : [path.join(info.directory, info.normalized)];
 
-    const foundPath = PathFinder.findPath(baseFilePath, info.extension);
-    if (foundPath) {
-      return toImport({...info, extension: foundPath.extension});
+    for (const baseFilePath of baseFilePaths) {
+      const foundPath = PathFinder.findPath(baseFilePath, info.extension);
+      if (foundPath) {
+        return toImport({...info, extension: foundPath.extension});
+      }
     }
   }
   return null;
