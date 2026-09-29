@@ -48,6 +48,10 @@
   "license": "MIT",
   "main": "dist/src/converter/convertProject.ts",
   "name": "ts2esm",
+  "overrides": {
+    "@typescript-eslint/eslint-plugin": "^8.71.0",
+    "@typescript-eslint/parser": "^8.71.0"
+  },
   "private": false,
   "repository": {
     "type": "git",
