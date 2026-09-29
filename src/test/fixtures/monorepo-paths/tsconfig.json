@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "Node16",
+    "paths": {
+      "@generated/*": ["./libs/missing/*", "./libs/generated/*"],
+      "@mylib": ["./libs/mylib/src/index.ts"],
+      "@mylib/*": ["./libs/mylib/src/*"]
+    },
+    "strict": true
+  }
+}

@@ -1,6 +1,6 @@
 import {
   findBestMatch,
-  getNormalizedPath,
+  getNormalizedPaths,
   hasRelativePath,
   isMatchingPath,
   removePathAlias,
@@ -58,13 +58,13 @@ describe('PathUtil', () => {
       // falsy
       expect(isMatchingPath('@app/*', './removeSuffix')).toBeFalsy();
       expect(isMatchingPath('🐵', './removeSuffix')).toBeFalsy();
+      expect(isMatchingPath('@app/*', '@app')).toBeFalsy();
+      expect(isMatchingPath('@app/*', '@application/dto')).toBeFalsy();
     });
   });
 
-  describe('getNormalizedPath', () => {
+  describe('getNormalizedPaths', () => {
     const projectDirectory = '/home/bennycode/dev/bennycode/ts-demo-npm-cjs';
-
-    const expectation = `${projectDirectory}/src/helpers/removeSuffix`;
 
     const info = {
       normalized: '@helpers/removeSuffix',
@@ -72,13 +72,28 @@ describe('PathUtil', () => {
       quoteSymbol: '"',
     };
 
-    const paths = {
-      '@helpers/*': ['./src/helpers/*'],
-      '~/*': ['./src/*'],
-      'helpers/*': ['./src/helpers/*'],
-    };
+    it('resolves a path alias relative to the given directory', () => {
+      const paths = {
+        '@helpers/*': ['./src/helpers/*'],
+        '~/*': ['./src/*'],
+        'helpers/*': ['./src/helpers/*'],
+      };
 
-    expect(getNormalizedPath(projectDirectory, info, paths)).toBe(expectation);
+      expect(getNormalizedPaths(projectDirectory, info, paths)).toEqual([
+        `${projectDirectory}/src/helpers/removeSuffix`,
+      ]);
+    });
+
+    it('returns one path per alias target', () => {
+      const paths = {
+        '@helpers/*': ['./src/helpers/*', './generated/helpers/*'],
+      };
+
+      expect(getNormalizedPaths(projectDirectory, info, paths)).toEqual([
+        `${projectDirectory}/src/helpers/removeSuffix`,
+        `${projectDirectory}/generated/helpers/removeSuffix`,
+      ]);
+    });
   });
 
   describe('hasRelativePath', () => {
