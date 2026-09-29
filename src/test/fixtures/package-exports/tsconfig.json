@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "Node16",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "es2016"
+  },
+  "include": ["src"]
+}

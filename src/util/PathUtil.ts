@@ -1,5 +1,4 @@
 import path from 'node:path';
-import fs from 'node:fs';
 import type {ModuleInfo} from '../parser/InfoParser.js';
 
 /**
@@ -54,11 +53,4 @@ export function hasRelativePath(path: string) {
     return true;
   }
   return path.startsWith('./') || path.startsWith('../');
-}
-
-export function isNodeModuleRoot(directory: string): boolean {
-  const isInNodeModules = directory.includes(`node_modules${path.sep}`);
-  const packageJsonPath = path.join(directory, 'package.json');
-  const packageJsonExists = fs.existsSync(packageJsonPath);
-  return isInNodeModules && packageJsonExists;
 }

@@ -11,3 +11,6 @@ dist/
 lerna-debug.log
 node_modules/
 npm-debug.log*
+
+# Fake packages used as test fixtures
+!src/test/fixtures/*/node_modules/

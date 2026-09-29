@@ -39,6 +39,10 @@ describe('convertFile', () => {
       await testFileConversion('dynamic-imports');
     });
 
+    it('adds file extensions to package imports only when needed to resolve as ESM', async () => {
+      await testFileConversion('package-exports');
+    });
+
     it('handles index files referenced with a trailing slash', async () => {
       await testFileConversion('trailing-slash');
     });
