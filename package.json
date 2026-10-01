@@ -47,7 +47,7 @@
     "typescript"
   ],
   "license": "MIT",
-  "main": "dist/src/converter/convertProject.ts",
+  "main": "dist/src/converter/convertProject.js",
   "name": "ts2esm",
   "private": false,
   "repository": {
