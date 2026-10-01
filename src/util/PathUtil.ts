@@ -36,7 +36,7 @@ export function findBestMatch(aliasMap: Record<string, string[]>, path: string) 
   return bestMatch;
 }
 
-/***
+/**
  * Use this if your path includes a path alias. Returns one path per alias target, in the order TypeScript tries them.
  * @param pathsBaseDirectory Directory that the "paths" in tsconfig.json are relative to
  */

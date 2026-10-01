@@ -19,8 +19,10 @@ export function setJsonValue(json: Record<string, unknown>, jsonPatchPath: strin
   try {
     return apply_patch(json, [{op: 'replace', path: jsonPatchPath, value}]);
   } catch (error) {
-    // Catch "Replace operation must point to an existing value!"
-    // @see https://github.com/dharmafly/jsonpatch.js/issues/41
+    /*
+     * Catch "Replace operation must point to an existing value!"
+     * @see https://github.com/dharmafly/jsonpatch.js/issues/41
+     */
     return apply_patch(json, [{op: 'add', path: jsonPatchPath, value}]);
   }
 }
