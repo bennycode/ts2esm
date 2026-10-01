@@ -3,14 +3,12 @@ updates:
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      day: 'tuesday'
       interval: 'monthly'
       time: '02:00'
       timezone: 'Europe/Berlin'
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      day: 'tuesday'
       interval: 'monthly'
       time: '02:00'
       timezone: 'Europe/Berlin'
@@ -21,10 +19,13 @@ updates:
     commit-message:
       prefix: 'chore'
       include: 'scope'
+    groups:
+      minor-and-patch:
+        update-types:
+          - 'minor'
+          - 'patch'
     ignore:
-      - dependency-name: '@types/node'
+      # TypeScript 7 has no JavaScript compiler API, which ts-morph and typescript-eslint need
+      - dependency-name: 'typescript'
         versions:
-          - '>= 19'
-      - dependency-name: 'eslint'
-        versions:
-          - '>= 9'
+          - '>= 7'
