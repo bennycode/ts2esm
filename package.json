@@ -82,5 +82,5 @@
     "test:unit:coverage": "npm run test:unit -- --coverage.enabled"
   },
   "type": "module",
-  "version": "2.2.7"
+  "version": "3.0.0"
 }
