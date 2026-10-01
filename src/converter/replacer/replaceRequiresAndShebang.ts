@@ -15,8 +15,10 @@ function replaceRequire(sourceFile: SourceFile, statement: VariableStatement) {
     return false;
   }
 
-  // Get call expression from variable declaration
-  // @see https://github.com/dsherret/ts-morph/issues/682#issuecomment-520246214
+  /*
+   * Get call expression from variable declaration
+   * @see https://github.com/dsherret/ts-morph/issues/682#issuecomment-520246214
+   */
   const callExpression = declaration.getInitializerIfKind(SyntaxKind.CallExpression);
   if (!callExpression) {
     return false;
@@ -60,9 +62,11 @@ export function replaceRequiresAndShebang(sourceFile: SourceFile) {
   const hasShebang = firstStatement && firstStatement?.getFullText().startsWith('#!');
   let shebangText = '';
   if (hasShebang) {
-    // The full text contains both comments and the following statement,
-    // so we are separating the statement into comments and the instruction that follow on the next line.
-    const {statement: lineAfterShebang, comment} = NodeUtil.extractComment(firstStatement);
+    /*
+     * The full text contains both comments and the following statement,
+     * so we are separating the statement into comments and the instruction that follow on the next line.
+     */
+    const {comment, statement: lineAfterShebang} = NodeUtil.extractComment(firstStatement);
     shebangText = comment;
     // We remove the node containing the shebang comment (and the following statement) to insert only the pure statement.
     const index = firstStatement.getChildIndex();

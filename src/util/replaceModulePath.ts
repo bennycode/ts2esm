@@ -8,8 +8,8 @@ import {PathFinder} from './PathFinder.js';
 
 export function replaceModulePath({
   hasAttributesClause,
-  stringLiteral,
   sourceFile,
+  stringLiteral,
 }: {
   hasAttributesClause: boolean;
   stringLiteral: StringLiteral;
@@ -52,8 +52,10 @@ function createReplacementPath({
       return createPackageImportPath(info);
     }
 
-    // If an import does not have a file extension or isn't an extension recognized here and can't be found locally (perhaps
-    // file had . in name), try to find a matching file by traversing through all valid TypeScript source file extensions.
+    /*
+     * If an import does not have a file extension or isn't an extension recognized here and can't be found locally (perhaps
+     * file had . in name), try to find a matching file by traversing through all valid TypeScript source file extensions.
+     */
     const baseFilePaths = comesFromPathAlias
       ? getNormalizedPaths(pathsBaseDirectory, info, paths)
       : [path.join(info.directory, info.normalized)];
@@ -88,10 +90,12 @@ function resolvesAsESM(specifier: string, containingFile: string) {
   return !!resolvedModule;
 }
 
-// Imports from packages only get an extension when they don't resolve as written but do with the extension.
-// This keeps imports of packages with "exports" (i.e. "firebase-functions/v1/https") untouched,
-// while legacy packages (i.e. "lodash/omit") become "lodash/omit.js".
-// @see https://github.com/bennycode/ts2esm/issues/128
+/*
+ * Imports from packages only get an extension when they don't resolve as written but do with the extension.
+ * This keeps imports of packages with "exports" (i.e. "firebase-functions/v1/https") untouched,
+ * while legacy packages (i.e. "lodash/omit") become "lodash/omit.js".
+ * @see https://github.com/bennycode/ts2esm/issues/128
+ */
 function createPackageImportPath(info: ModuleInfo) {
   if (resolvesAsESM(info.normalized, info.sourceFilePath)) {
     return null;

@@ -9,5 +9,7 @@ export default defineConfig({
     },
     environment: 'node',
     globals: true,
+    // Vitest 4+ no longer excludes "dist" by default, which would run the compiled tests a second time
+    include: ['src/**/*.test.ts'],
   },
 });

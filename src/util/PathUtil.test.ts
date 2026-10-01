@@ -37,8 +37,8 @@ describe('PathUtil', () => {
     it('returns an empty string if there is no match', () => {
       const aliasMap = {
         '@helpers/*': ['./src/helpers/*'],
-        '~/*': ['./src/*'],
         'helpers/*': ['./src/helpers/*'],
+        '~/*': ['./src/*'],
       };
 
       const importPath = '../getNumber';
@@ -75,8 +75,8 @@ describe('PathUtil', () => {
     it('resolves a path alias relative to the given directory', () => {
       const paths = {
         '@helpers/*': ['./src/helpers/*'],
-        '~/*': ['./src/*'],
         'helpers/*': ['./src/helpers/*'],
+        '~/*': ['./src/*'],
       };
 
       expect(getNormalizedPaths(projectDirectory, info, paths)).toEqual([

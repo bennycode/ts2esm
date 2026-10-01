@@ -1,15 +1,21 @@
 import {Expression, Identifier, SourceFile, Statement, SyntaxKind, ts} from 'ts-morph';
 import {NodeUtil} from '../../util/NodeUtil.js';
 
-// module.exports = Benny
-// Binary Expression > PropertyAccessExpression + Identifier
+/*
+ * module.exports = Benny
+ * Binary Expression > PropertyAccessExpression + Identifier
+ */
 
-// module.exports = function some()
-// Binary Expression > PropertyAccessExpression + FunctionExpression
+/*
+ * module.exports = function some()
+ * Binary Expression > PropertyAccessExpression + FunctionExpression
+ */
 
-// module.exports = { a, b: c } -> ["a", "c as b"]
-// Returns undefined when a property is not a plain identifier reference (e.g. { a: 1 }),
-// because named exports can only re-export existing bindings.
+/*
+ * module.exports = { a, b: c } -> ["a", "c as b"]
+ * Returns undefined when a property is not a plain identifier reference (e.g. { a: 1 }),
+ * because named exports can only re-export existing bindings.
+ */
 function getNamedExports(expression: Expression) {
   const objectLiteral = expression.asKind(SyntaxKind.ObjectLiteralExpression);
   if (!objectLiteral) {
@@ -45,9 +51,11 @@ function isReservedWord(identifier: Identifier) {
   return isKeyword || STRICT_MODE_RESERVED.has(identifier.getText());
 }
 
-// Returns the export name if it can be declared as a module-level const, otherwise a free alias like "_name".
-// ponytail: treats any identifier with the same text elsewhere in the file as taken (no scope analysis),
-// so some exports get an alias they don't strictly need. The output stays valid either way.
+/*
+ * Returns the export name if it can be declared as a module-level const, otherwise a free alias like "_name".
+ * ponytail: treats any identifier with the same text elsewhere in the file as taken (no scope analysis),
+ * so some exports get an alias they don't strictly need. The output stays valid either way.
+ */
 function getLocalName(sourceFile: SourceFile, statement: Statement, identifier: Identifier) {
   const name = identifier.getText();
   const usedNames = new Set(
@@ -114,8 +122,10 @@ export function replaceModuleExports(sourceFile: SourceFile) {
           } else if (namedExports) {
             sourceFile.insertExportDeclaration(position, {namedExports});
           } else {
-            // Any other expression becomes a default export, so no code gets dropped
-            // @see https://github.com/dsherret/ts-morph/issues/1586
+            /*
+             * Any other expression becomes a default export, so no code gets dropped
+             * @see https://github.com/dsherret/ts-morph/issues/1586
+             */
             sourceFile.insertStatements(position, `${comment}export default ${rightText};`);
           }
 
